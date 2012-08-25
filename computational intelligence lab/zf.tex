@@ -1,0 +1,472 @@
+%\documentclass[a4paper, twocolumn]{article}
+\documentclass[a4paper,11pt,landscape]{article}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape,margin=1cm,top=0.5cm,left=0.5cm,right=0.5cm,bottom=1cm, nohead,nofoot]{geometry}
+
+\usepackage{mdwlist} % Avoid list double spacing
+
+% Turn off header and footer
+\pagestyle{empty}
+ 
+\usepackage[compact]{titlesec}
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\small\bfseries}{\thesubsubsection}{1em}{}
+
+\titlespacing*{\section}{0pt}{*0}{0pt}
+\titlespacing*{\subsection}{0pt}{*0}{0pt}
+\titlespacing*{\subsubsection}{0pt}{*0}{0pt}
+
+% Define BibTeX command
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+% math packages
+\usepackage{amsmath}
+\usepackage{amsfonts} % for mathbb for instance
+\usepackage{mathtools}
+\usepackage[amsmath, amsthm, framed, thmmarks]{ntheorem}
+
+% specifics about the pdf
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage[pdftex,bookmarks,colorlinks,pdffitwindow]{hyperref}
+
+% redefine greek letters
+\renewcommand{\phi}{\varphi}
+\renewcommand{\epsilon}{\varepsilon}
+
+% shortcuts in math mode
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\mc}{\mathcal}
+\newcommand{\ds}{\displaystyle}
+\DeclarePairedDelimiter\absimpl{\lvert}{\rvert}
+\DeclarePairedDelimiter\normimpl{\lVert}{\rVert}
+\newcommand{\abs}[1]{\absimpl*{#1}}
+\newcommand{\norm}[1]{\normimpl*{#1}}
+\newcommand{\argmax}{\operatorname*{arg\,max}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}
+
+% number sets
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\powerset}{\mathcal P}
+\newcommand{\normal}{\mathcal N}
+
+\newcommand{\sectionline}{\noindent\makebox[\linewidth]{\rule{\columnwidth}{0.1pt}}}
+\newcommand{\msection}[1]{\vspace{-1mm}\sectionline\vspace{-1mm}\section{#1}\vspace{-1mm}}
+% probabilities
+\newcommand{\Prob}[1]{\operatorname{Pr}\left[#1\right]}
+\newcommand{\Ex}[1]{\mathbb{E}\left[#1\right]}
+
+% misc
+\newcommand{\bigO}[1]{\mc O\left(#1\right)} % big-o notation
+
+\newcommand{\nop}[1]{} % temporarily remove from output
+
+% remove the paragraph indentation
+ \setlength{\parindent}{0in}
+
+\title{Computational Intelligence Lab -- Summary}
+\author{Pascal Spörri (pascal.spoerri@gmail.com)}
+\begin{document}
+\raggedright
+\footnotesize
+\setlength{\columnseprule}{0.1mm}
+\abovedisplayskip=0pt
+\belowdisplayskip=0cm
+\allowdisplaybreaks
+\itemsep-0.7em
+ 
+\begin{multicols}{3}
+% \maketitle
+\textbf{CIL Summary - Pascal Spörri}
+\vspace{-2mm}
+\sectionline
+\section{Basics}
+\begin{align*}
+ \text{Scalar product: }&\mathbf x^T \mathbf y = ||\mathbf x||_2 \cos \theta\\
+ L_2-\text{Norm: } & ||x||_2 = \sqrt{x^Tx}\\
+ \text{Spectral Norm: } &\ ||A||_2 = \sigma_{max}(A)\\\
+ \text{Nuclear Norm: }& ||A||_* = \sum_{i=1}^{\min\{m,n\}} \sigma_i\quad (\sigma: \text{Singular Value})\\
+ \text{Frobenius Norm: }& ||A||_F = \sqrt{\sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2}
+\end{align*}
+
+\vspace{-3mm}
+\subsection{Statistics}
+\begin{align*}
+ \text{Expectation: }&\mathbb E[\mathbf X] = (\mathbb E[X_1], \ldots, \mathbb E[X_D])^T\\
+ \text{Covariance: } &Cov[X,Y] = \int_{\mathcal X}\int{\mathcal Y} p(x,y)(x - \mu_X)(y - \mu_Y) dxdy\\
+ &\qquad \qquad \, \ = \mathbb \mathcal E_{X,Y}[(x-\mu_X)(y-\mu_Y)]\\
+ \text{Cov Matrix $\mathbf \Sigma$: } & \Sigma_{i,j} := Cov[\mathbf X_i, \mathbf X_j]
+\end{align*}
+
+\subsubsection{Gaussian Distribution}
+\vspace{-2mm}
+\begin{align*}
+ g(x;\ \mu,\sigma) &= {1\over \sqrt{2\pi \sigma^2}} \cdot e^{- {(x-\mu)^2 \over 2 \sigma^2}}
+\end{align*}
+With $\mu$ being the mean and $\sigma$ the standard deviation.
+\begin{align*}
+ g(\mathbf x;\ \mathbf \mu, \mathbf \Sigma) = {1\over \sqrt{(2\pi)^D \cdot |\mathbf \Sigma|^{1\over 2}}} e^{\frac{1}{2} (\mathbf x - \mathbf \mu)^T  \Sigma^{-1}  (\mathbf x - \mathbf \mu)}\\
+ D\:\ \text{Dimensions},\ \Sigma\:\ \text{Covariance Matrix}
+\end{align*}
+\subsubsection{Bayes' Theorem}
+\begin{align*}
+ P(A|B) &= {P(B|A)\cdot P(A) \over P(B)} = {P(B|A) \cdot P(A) \over \sum_i P(B|A_i)\cdot P(A_i)}
+\end{align*}
+\belowdisplayskip=0pt
+
+\subsection{Eigenvalue Decomposition}
+\begin{align*}
+ \exists u:\ A u = \lambda u \qquad A = U \cdot \Lambda \cdot U
+\end{align*}
+If $A^T\cdot A = A\cdot A^T$ then $A = U\cdot\Lambda\cdot U^{-1} =U\cdot\Lambda\cdot U^{T}$
+
+
+\subsection{Convex}
+A function $f:\R^n \mapsto \R$ is \emph{convex} if $dom\ f$ is a a convex set and if for all $x,y \in dom\ f$, and $\theta \in [0,1]$ we have:
+\[
+ f(\theta x +(1-\theta )y)\leq \theta f(x)+(1-\theta) f(y).
+\]
+
+\subsection{Singular Value Decomposition}
+Let $A \in \R^{m\times n}$. $A$ can be decomposed as
+\begin{align*}
+ A &= \underbrace{U}_{\R^{m\times m}}\cdot \underbrace{D}_{\R^{m\times n}}\cdot \underbrace{V}_{\R^{n\times n}}^T
+%  \\
+%  U &\in \R^{m\times m} \quad \text{is orthogonal}\\
+%  D &\in \R^{m\times n} \quad \text{is a diagonal matrix}\\
+%  V &\in \R^{n\times n} \quad \text{is orthogonal}
+\end{align*}
+
+\msection{Principal Component Analysis}
+Minimize error $||x_n - \tilde x_n||_2$ of point $x_n$ and it's approximation $\tilde x_n$.
+Algorithm, for $\mathbf X\in \R^{D\times N}$:
+\begin{enumerate}
+ \item Compute the zero-centered data $\overline{\mathbf X}$ by subtracting the mean of the sample $\overline{\mathbf X} = \mathbf X - \mathbf M$.
+ \item Calculate the covariance matrix $\mathbf \Sigma = \frac{1}{N}\overline{\mathbf X} \ \overline{\mathbf X}^T$
+ \item Compute the eigenvectors $\mathbf U$ and eigenvalues $\mathbf \Lambda$ of the covariance matrix
+ \item Compute the projection of $\overline{\mathbf X}$ on the largest $k$ principal components $\mathbf U_k = [u_1, \ldots, u_k]$ by $\overline{\mathbf Z}_k = \mathbf U_k^T \overline{\mathbf X}$
+\end{enumerate}
+To approximate $\overline{\mathbf X}$ we return to the original basis by $\tilde{\overline{\mathbf X}} = \mathbf U_k \overline{\mathbf Z}_k$
+
+\msection{$\mathbf K$-means}
+\[
+    J(\mathbf U, \mathbf Z) = ||\mathbf X - \mathbf{UZ}||_2^2 = \sum_{n=1}^N \sum_{k=1}^K z_{k,n} ||\mathbf x_n - \mathbf u_k ||_2^2
+\]
+Data: $\mathbf X = [\mathbf x_1 \ldots \mathbf x_n] \in \R^{D\times N}$, centroids: $\mathbf U = [\mathbf u_1 \ldots \mathbf u_K] \in \R^{D\times K}$ and the assignment $\mathbf Z \in \{0,1\}^{K \times N}$
+\subsection{Algorithm}
+\begin{enumerate}
+ \item Initiate $\mathbf u_1^{(0)}, \ldots, \mathbf u_K^{(0)}$ (random choice or data points from the set)
+ \item \emph{Cluster assignment}. Solve $\forall n$:
+ \[
+  k^*(\mathbf x_n) = \argmin \left\{||\mathbf x_n - \mathbf u_1^{(t)}||_2^2,\ldots, ||\mathbf x_n - \mathbf u_K^{(t)}||_2^2 \right\}.
+ \]
+ Then, $z_{k^*(\mathbf x_n), n}^{(t)} = 1$ and $z_{j, n}^{(t)}\ \forall k, k\in \{1, \ldots, K\}$
+\item \emph{Centroid update}.
+\[
+ \mathbf u_k^{(t)} = {\sum_{n=1}^N z_{k,n}^{(t)}\mathbf x_n \over \sum_{i=1}^N z_{k,n}^{(t)}}\quad \forall k,\ k \in \{1, \ldots, K\}
+\]
+\item Increment $t$. Repeat step 2 until $||\mathbf u_k^{(t)} - \mathbf u_k^{t-1}||_2^2 < \epsilon \forall k$ or until $t=t_\text{finish}$
+
+\end{enumerate}
+
+Convergence is guaranteed, optimizes a non-convex objective $\implies$ we can only guarantee to find a local minimum.
+
+\subsubsection{Stability}
+Cluster data and train classifier and test permuted output.
+\[
+ r := {1 \over N} \min_{\pi \in P_K} \left\{ \sum_{i=1}^N \mathbb{I}_{
+    \left\{ \pi (\phi (x_i')) \neq \hat{z}_i' \right\}
+  } \right\}
+\]
+Given $K$ clusters of equal size, a random assignment yields $r_{\text{rand}}) {K-1 \over K}$. The stability is thus defined as:
+\[
+ stab := 1 - {r \over r_{\text{rand}}} =
+  \begin{cases}
+   1 & \text{No inconsistent assignments}\\
+   0 & \text{The output is random.}
+  \end{cases}
+\]
+
+
+\emph{Test clustering stability} by generating perturbed versions of the set and applying the clustering algorithm.
+\msection{Gaussian Mixture Model}
+Mixture of $K$ probaility densities is defined as:
+\begin{align*}
+ p(\mathbf x) &= \sum_{k=1}^K \pi_k p(\mathbf x | \theta_k) = \sum_{k=1}^K \pi_k \mathcal N(\mathbf x | \mathbf \mu_k, \mathbf \Sigma_k)\\
+ p(\mathbf X | \mathbf \pi, \mathbf\mu, \mathbf\Sigma) &= \prod_{n=1}^N p(\mathbf x_n) = \prod_{n=1}^N \sum_{k=1}^K \pi_k \mathcal N(\mathbf x_n| \mu_k, \mathbf \Sigma_k).
+\end{align*}
+We want to find the parameters that maximize the likelihood:
+\begin{align*}
+ (\mathbf{\hat x}, \mathbf{\hat \mu }, \mathbf{\hat \Sigma}) &\in \argmax_{\mathbf \pi, \mathbf \mu, \mathbf \Sigma} \sum_{n=1}^N \log \left\{ \sum_{k=1}^K  \pi_k \mathcal N (\mathbf x_n | \mathbf \mu_k, \mathbf \Sigma_k) \right\}\\
+ \text{Algo: }& \text{Initialize }\mathbf \mu_k \text{ and }\mathbf \pi_k \text{. Set the }\mathbf \Sigma_k\\
+  \text{Eval: }&\gamma(z_{k, n}) = {\pi_k \mathcal N(\mathbf x_n | \mathbf \mu_k, \mathbf \Sigma_k) \over \sum_j \pi_j \mathcal N(\mathbf x_n | \mathbf \mu_j, \Sigma_j)}\\
+  \text{Update: }&\mathbf \mu_k^\text{new} = {1\over N_k} \sum_{n=1}^N \gamma(z_{k,n})\mathbf x_n\text{, }
+  \pi_k^{\text{new}} = {N_k\over N} \text{, } N_k = \sum_{n=1}^N \gamma(z_{k,n})
+\end{align*}
+
+
+
+\msection{RBAC}
+Given user-permission matrix $\mathbf X$, find roles $\mathbf U$ and assignments $\mathbf Z$ such that
+\begin{align*}
+    \mathbf X = \mathbf U \bigotimes \mathbf Z &\quad \Longleftrightarrow \quad x_{dn} = \bigvee_k = [u_{dk} \land z_{kn}]\\
+%     \text{SAC: }\ p(\mathbf X|\mathbf \beta, \mathbf Z) &= \prod_{n,d}(1-\beta_{dk_n})^{x_{dn}}(\beta_{dk_n})^{1-x_{dn}}\\
+%   \\ 
+  p(\mathbf X|\mathbf \beta, \mathbf Z) &= \prod_{n,d}\left(
+   1 - \prod_k \beta_{dk}^{z_{kn}}\right)^{x_{dn}}\left( \prod_k \beta_{dk}^{z_{kn}}\right)^{1-x_{dn}} (\text{mult. assignm.})\\
+\end{align*}
+% \emph{SAC}: Single, \emph{MAC}: Multiple Assignments.
+
+Noise model: $x_{dn} = (1-\xi_{dn})(\mathbf U \otimes \mathbf Z)_{dn}+\xi_{dn}\nu_{dn}$. Final Model:
+\begin{align*}
+   p(\mathbf X| \mathbf Z, \mathbf \beta, \epsilon, r) &=
+   \prod_{n,d}\left(\epsilon r + (1-\epsilon)(1-\beta_{d, \mathcal L_n}) \right)^{x_{dn}}\\
+   & \qquad\quad \cdot \left( \epsilon(1-r)+(1-\epsilon)\beta_{d,\mathcal L_n} \right)^{1-x_{dn}}
+\end{align*}
+$\epsilon$: Noise probability, $r$ probability of noisy bits to be $1$ and $\mathbf \beta$ probabilities of role-permission assignments $\mathbf U$ to be $0$.
+
+\emph{Not convex!} Use an EM-type algorithm to maximize the function.
+\subsection{Evaluating a Matrix Reconstruction}
+The deviation is the fraction of wrongly predicted definitions.
+\begin{align*}
+  \text{Deviation: }& {1\over N\cdot D} ||X-\hat{ \mathbf{U}} \otimes \hat{\mathbf Z} ||_1 \\
+  \text{Coverage: } Cov & = {\{|\{(i,j)|\hat x_{i,j} = x_{i,j} = 1\}| \over |\{(i,j)|x_{i,j}=1\}|}
+\end{align*}
+
+\msection{Non-Negative MF}
+Given Document-term matrix $\mathbf X\in \R_+^{D\times N}$. We want a NMF for which holds:
+\[
+ \mathbf X \approx \mathbf{UZ} \ \ \text{with}\ \  \mathbf U\in \R_+^{D \times K}\ \text{and}\ \mathbf Z\in \R_+^{K\times N}
+\]
+
+\subsection{Probabilistic LSI}
+In order to generate a tuple $({document}, {word})$:
+\begin{itemize}
+ \item Sample document according to $P(document)$
+ \item Sample word according to $P(word|document)$
+ \item Assume a factorization
+  \[
+   P(word|document) = \sum_{\text{topic}} P(word|topic)P(topic|document)
+  \]
+  which can be written as
+  \[
+   P(d-th\ word,\ n-th\ document) = x_{dn} = (\mathbf{UZ})_{dn}
+  \]
+\end{itemize}
+% \section{Write Algorithm of pLSI...}
+The pLSI is computed using a non-negative $\mathbf X$ and a quadratic cost function:
+\begin{align*}
+ \min_{\mathbf U,\ \mathbf Z} J(\mathbf U, \mathbf Z) = {1\over 2} || \mathbf X- \mathbf U \mathbf Z||_2^2\qquad u_{dk},\ z_{kn} \in \R_0^+,
+\end{align*}
+% with the Kullback-Leibler Divergence:
+% \begin{align*}
+% \min_{\mathbf U, \mathbf Z} = \sum_{d=1}^D \sum_{n=1}^N x_{dn} \log\left({x_{dn} \over (\mathbf U \mathbf Z)_{dn}}\right)\\
+%  \sum_{d=1}^D u_{dk} = 1 \forall k \qquad \sum_{k,n} z_{kn} = 1.
+% \end{align*}
+Algorithm:
+\begin{align*}
+ &\mathbf U = rand(D,K),\ \mathbf Z = rand(K,N)\\
+ &\text{for }i=1\:maxiter\ \text{ do}\\
+ &\qquad \text{Update factors } \mathbf U: \ u_{dk} = u_{dk}{ (\mathbf X \mathbf Z^T)_{dk} \over (\mathbf U \mathbf Z \mathbf Z^T)_{dk}}\\
+ &\qquad \text{Update coefficients} \mathbf Z:\ z_{kn} = z_{kn} {(\mathbf U^T \mathbf X)_{kn} \over (\mathbf U^T\mathbf U \mathbf Z)_{kn}}
+\end{align*}
+This leads to $\mathbf X \approx \mathbf{UZ}$ when $K<N$.
+
+\subsection{Show monotonic convergence}
+To prove that some non-negative $J(z)$ is guaranteed to converge we can follow these steps
+\begin{itemize}
+ \item Define \emph{auxiliary function} $G(z,z^t)$ for $J(z)$ such that:
+ \[
+  G(z,z') \geq J(z) \text{and}\ G(z,z) = J(z)
+ \]
+ \item Find a local minimum of $G$ by following repeatedly
+ \[
+  z^{t+1} = \argmin_z G(z,z^t)
+ \]
+ \item The sequence $\{z^t\}$ is converging to a local minimum of $J(z)$
+ \[
+  J(z^{t+1}) \leq G(z^{t+1}, z^t) \leq G(z^t, z^t) = J(z^t)
+ \]
+\end{itemize}
+Example:
+\begin{align*}
+ G(\mathbf Z,\mathbf Z^t) &= J(\mathbf Z^t) + (\mathbf Z - \mathbf Z^t)\nabla J(\mathbf Z^t) + {1\over 2}(\mathbf Z- \mathbf Z^t)^T M(Z-Z^t)\\
+ M_{kn}(Z^t) &=\delta_{kn}{(\mathbf U^T \mathbf U \mathbf Z^t)_k \over \mathbf Z_k^t} \qquad \delta_{kn}:\ \text{Kronecker delta}
+\end{align*}
+
+\msection{Sparse Coding}
+\begin{align*}
+ f &= \sum_{l=1}^L z_l \underbrace{u_l}_{\text{base}} = \sum_{l=1}^L \langle \underbrace{f}_\text{signal}, u_l\rangle u_l &
+ \text{Compression:}\ \ \hat{f} = \sum_{k\in \sigma} z_k u_k\\
+ &\text{Error:}\ \ ||f-\hat f||^2 = \sum_{k \notin \sigma} | \langle f, u_k\rangle|^2
+\end{align*}
+
+\subsection{Compressive Sensing}
+\begin{align*}
+ \mathbf x &= \mathbf{U} \mathbf z &\mathbf U \ \text{basis}\\
+ \mathbf y &= \mathbf W \mathbf x = \mathbf W \mathbf U \mathbf z := \mathbf \Theta \mathbf z & \Theta = \mathbf W \mathbf U \ \in \R^{M\times D}
+\end{align*}
+\begin{enumerate}
+ \item All elements in $w_{i,j}$ of Matrix $\mathbf W$ are i.i.d. random variables with a Gaussian distribution with zero mean and variance ${1 \over D}$.
+ \item $M:\ M \leq cK\log\left({D\over K}\right)$, where $c$ is some constant.
+\end{enumerate}
+Since $\mathbf x$ and $\mathbf z$ are both unknown, $\mathbf z$ can be reconstructed with
+\[
+ z^* = \argmin_z ||z||_0 \qquad \text{s.t.}\ \mathbf \Theta \mathbf z = \mathbf y
+\]
+NP hard, solve this with Matching Pursuit.
+
+\subsection{Coherence}
+Increasing the overcompleteness factor ${L \over D}$: Increases the sparsity of the coding and increases the linear dependency between atoms.
+\[
+ \text{coherence: } m(\mathbf U) = \max_{i, j: i \neq j} \left| \mathbf u_i^T \mathbf u_j \right|
+\]
+\begin{itemize}
+ \item $m(\mathbf B) = 0$ for an orthogonal basis $\mathbf B$
+ \item $m([\mathbf B \mathbf u]) \geq {1 \over \sqrt{D}}$ if atom $\mathbf u$ added to $\mathbf B$
+\end{itemize}
+\subsection{Overcompleteness and noise}
+\begin{align*}
+ \text{Overcompleteness: }& z^* = \argmin_z ||\mathbf z||_0 \\
+ &\text{s.t. }\quad \mathbf x = \mathbf U \mathbf z\\
+ \text{Noise: }& z^* = \argmin_z ||\mathbf z||_0 \quad \mathbf x = \mathbf U \mathbf z + n  \text{ with }n ~ \normal(0, \sigma^2)\\
+ &\text{s.t. }\quad ||\mathbf x - \mathbf U \mathbf z||_2 < \sigma
+\end{align*}
+\subsection{Matching Pursuit (MP)}
+Greedy algorithm: Approximate NP hard problem iteratively. Applied to sparse coding:
+\begin{enumerate}
+ \item Start with zero vector $\mathbf z = \mathbf 0$ and residual $\mathbf r^0 = \mathbf x$
+ \item At each iteration $t$, take a step in the direction of the atom $\mathbf u_{d^*(t)}$ that maximally reduces the residual $||\mathbf x - \mathbf U \mathbf z||_2$.\\
+ Criteria: $d^*(t) = \argmax_d |\langle \mathbf t^t, \mathbf u_d \rangle |$\\
+ Update: $z_{d^*} \leftarrow z_{d^*} + \mathbf u_{d^*}^T \mathbf r$, $\mathbf r \leftarrow \mathbf r - (\mathbf u_{d^*}^T \mathbf r) \mathbf u_{d^*}$
+\end{enumerate}
+Exact recovery when $K < {1 \over 2} \left( 1 + {1 \over m(\mathbf U)} \right)$ ($K$: \# non-Zero el.)
+\section{Dictionary Learning}
+Factorize training set $\mathbf X \in \R^{D\times N}$ into a dictionary $\mathbf U \in \R^{D\times L}$ and sparsity constraint $\mathbf Z \in \{0,1\}^{L\times N}$ such that: $(\mathbf U^*, \mathbf Z^*) \in \argmin_{\mathbf U, \mathbf Z} ||\mathbf X - \mathbf U\cdot \mathbf Z||_F^2$ (not convex in $\mathbf U$ and $\mathbf Z$) but convex in either $\mathbf U$ or $\mathbf Z$.
+\begin{enumerate}
+ \item \emph{Coding step}: $\mathbf Z^{t+1} \in \argmin_{\mathbf Z} || \mathbf X - \mathbf U^t \cdot \mathbf Z||_F^2$, subject to $\mathbf Z$ being sparse and fixed $\mathbf U$ 
+ such that: $|| \mathbf x_n - \mathbf U^t \mathbf z||_2 \leq \sigma ||\mathbf x_n||_2$
+ \item \emph{Dictionary update}: $\mathbf U^{t+1} \in \argmin_{\mathbf U} ||\mathbf X - \mathbf U^t \cdot \mathbf Z||_F^2$, subject to  $||\mathbf u_l||_2=1$ $\forall l \in [1,l]$ and fixed $\mathbf Z$. \emph{Approximation}:  update one atom at a time for all $l = 1,\ldots,L$:
+ \begin{enumerate}
+  \item Set $\tilde{\mathbf U} = [\mathbf u_1^t \ldots \mathbf u_l \ldots \mathbf u_L^t]$ (fix all atoms except $\mathbf u_l$).
+  \item Isolate $\mathbf R_l^t$, the residual that is due to atom $\mathbf u_l$:
+   \begin{align*}
+    || \mathbf X - \tilde{\mathbf U} \cdot \mathbf Z^{t+1} ||_F^2 
+%     = \left|\left|  \mathbf X - \left(\sum_{e\neq l}\mathbf u_e^t(\mathbf z_e^{t+1})^T + \mathbf u_l (\mathbf z_l^{t+1})^T \right)\right|\right|\\
+    = || \mathbf R_l^t - \mathbf u_l ( \mathbf z_l^{t+1})^T||_F^2
+   \end{align*}
+
+  \item Find $\mathbf u_l^*$ that minimizes $\mathbf R_l^t$, subject to $||\mathbf u_l^*||_2 = 1$.
+  \[
+\text{with SVD of $\mathbf R_l^t$: }
+\mathbf R_l^t = \tilde{\mathbf U} \mathbf S \tilde{\mathbf V}^T = \sum_i s_i \tilde{\mathbf u_i}\tilde{\mathbf v_i}^T
+  \]
+ \end{enumerate}
+
+\end{enumerate}
+
+
+\msection{RPCA}
+\subsection{Convex Optimization}
+\begin{align*}
+ \text{Minimize}\ &f(x)\\
+ \text{subject to}\ & g_i(x) \leq 0,\ i=1,\ldots m\, \text{and}\, h_i(x)=0,\ i=1,\ldots,p
+\end{align*}
+\subsection{Lagrange Multipliers}
+\begin{align*}
+ \text{minimize}\ f(x)+ \sum_{i=1}^m I_\_(g_i(x)) +\sum_{i=1}^p I_0(h_i(x))
+ &\quad (\text{unconstrained pr.})\\
+ \diamond\ I_\_ = \begin{cases}
+         0 & u \leq 0\\
+         \infty & u > 0 
+        \end{cases}
+        \qquad \diamond\ 
+        I_0 = 
+        \begin{cases}
+         0 & u= 0\\
+         \infty & u\neq 0
+        \end{cases}
+\end{align*}
+Approximate $I_\_(u)$ linearly with $\lambda_iu,\ \lambda_i\geq 0$, and $I_0(u)$ with $\nu_i u$:
+\begin{align*}
+ &L(x,\lambda, \nu) = f(x) + \sum_{i=1}^m \lambda_i g_i(x) +\sum_{i=1}^p \nu_i h_i(x)\quad \underbrace{d(\lambda, \nu) = \inf_x\ L(x,\lambda,\nu)}_{\text{dual function}},\\
+ &\text{Lagrange dual problem:} 
+ \begin{cases}
+  \text{maximize} & d(\lambda, \nu)\\
+  \text{subject to} & \lambda \geq 0
+ \end{cases}.
+\end{align*}
+% \emph{Slater's Constraint Qualification} (One sufficient condition):
+% \begin{itemize}
+%  \item The primal problem is convex ($f$, $g_i$ are convex, $h_i$ are affine)
+%  \item It has a strictly feasible point:
+%  $\exists x \in \mathbf{relint}\ \mathcal D: g_i(x) < 0\quad i \in [1,m],\ h_i(x) = 0$
+% \end{itemize}
+\subsubsection{Convex Optimization Problem}
+\begin{align*}
+ &\text{Minimize }\, f(x) \qquad \text{subject to}\, Ax = b\\
+ \text{Lagrangian: }& L(x,\nu) = f(x) + \nu^T(Ax-b)\\
+ \text{Dual function: }& d(\nu) = \inf_x L(x, \nu)\\
+ \text{Dual problem: }& \text{maximize}\ d(\nu)\\
+ \text{Recover optimal $x$:}& x^* = \argmin_x L(x,\nu^*)
+\end{align*}
+\subsubsection{Method of Multipliers}
+Augmented Lagrangian:
+\begin{align*}
+  L_\rho (x,\nu) &= f(x) + \nu^T (Ax-b) + {\rho \over 2} ||Ax-b||_2^2\\
+ \text{Step: }& x^{k+1} := \argmin_x L_\rho (x,\nu^k)\\
+  &\nu^{k+1} := \nu^k +\rho (Ax^{k+1}-b)
+\end{align*}
+Choose $\rho$ as step size, since $x^{k+1}$ minimizes $L_\rho(x, \nu^k)$:
+\[
+ 0 =\nabla_x L\rho(x^{k+1}, \nu^k) = \nabla_x f(x^{k+1}) + \underbrace{A^T (\nu^k +\rho(Ax^{k+1}-b))}_{A^T \nu^{k+1}}
+\]
+
+\subsection{Alternating Direction Method of Multipliers}
+The augmented Lagrangian $L_\rho$ is not separable anymore $\implies$ we can't parallelize $x$-minimization.
+\begin{align*}
+ \text{Minimize: }\ &f(x) + p(z)\ \text{ subject to }\ Ax+Bz = c \qquad f,p \text{ convex}.\\
+ L_\rho(x, z, \nu) &= f(x)+p(z)+ \nu^T (Ax+Bz-c) + {\rho \over 2}||Ax + BZ- c||_2^2\\
+ \text{Steps: } & x^{k+1} := \argmin_x L_\rho (x, z^k, \nu^k)\\
+  & z^{k+1} := \argmin_z L_\rho(x^{k+1}, z, \nu^k)\\
+  & \nu^{k+1} := \nu^k + \rho(Ax^{k+1}+Bz^{k+1}-c)\\
+ \text{Conditions: }& Ax^* + Bz^* - c = 0 \quad (\text{Primal Feasibility})\\
+ &\nabla f(x^*) + A^T \nu^* = 0 (\text{Dual Feasibility})\\
+ &\nabla p(z^*) + B^T \nu^* = 0
+\end{align*}
+
+
+
+\subsection{Robust PCA}
+Decompose matrix into low-rank ($\mathbf L_0$) and sparse ($\mathbf S_0$) part:
+\[
+ \mathbf X \approx \mathbf L_0 + \mathbf S_0.
+\]
+Use convex relaxation:
+\begin{align*}
+ &\text{Minimize}\quad ||\mathbf L||_* + \lambda ||\mathbf S||_1, \qquad \text{subject to}\quad \mathbf L + \mathbf S = \mathbf X.\\
+ \mathbf L_0:&\ n\times n, \text{ of } rank(\mathbf L_0)\leq \rho_r n \mu^{-1} (\log n)^{-2}\\
+ \mathbf S_0:&\ n\times n, \text{ random sparsity pattern of cardinality }m \leq \rho_s n^2\\
+\end{align*}
+With probaility $1-\mathcal O(n^{-10})$, PCP with $\lambda = {1 \over \sqrt n}$ is exact.
+
+
+\end{multicols}
+\end{document}
