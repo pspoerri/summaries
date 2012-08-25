@@ -1,0 +1,92 @@
+\part{Integration of Ordinary Differential Equations: Single Step Methods}
+\section{Initial Value Problems (IVP) for ODEs}
+ \emph{Initial value problem} (\textbf{IVP}) for \emph{first-order ordinayr differential equation} (\textbf{ODE})
+	\begin{align*}
+	 \dot y &= f(t,y)\\
+	 y(t_0) &= y_0
+	\end{align*}
+\begin{itemize}
+ \item $f:I\times D \mapsto \R^d$ (= right hand side) given in procedural form: \verb|function v = f(t,y)|
+ \item $I \subset \R$ (= time interval)
+ \item $D \subset \R^d$ (= state space / phase space)
+ \item $\Omega = I \times D$ (= extended state space)
+ \item $t_0$ (= initial time)
+ \item $y_0$ (= initial value)
+\end{itemize}
+
+	For $d>1$: $\dot y = f(t,y)$ can be viewed as a \emph{system of ordinary differential equations}.
+	\[
+	 \dot y = f(y) \quad \Longleftrightarrow \quad \begin{pmatrix}
+	                                            y_1\\
+	                                            \hdots\\
+	                                            y_n
+	                                           \end{pmatrix} =
+	                                           \begin{pmatrix}
+	                                            f_1(t,y_1, \ldots,y_n)\\
+	                                            \hdots\\
+	                                            f_n(t,y_1,\ldots, y_n)
+	                                           \end{pmatrix}
+	\]
+	
+	\[
+	\text{Autonomous IVP }H: \qquad \left\{ \begin{array}{ll}
+	                              \dot y &= f(y)\\
+	                              y(0) &= y_0
+	                             \end{array} \right.
+	\]
+	\begin{fmerke}[Assumption: Global Solutions]
+	 All solutions of $H$ are global. $J(y_0) = \R$ for all $y_0 \in D$
+	\end{fmerke}
+
+	\begin{definition}[Evolution Operator]
+	 Under the Assumption above the mapping:
+		\[
+		 \Phi: \left\{ \begin{array}{ll}
+		                \R \times D &\mapsto D\\
+		                (t,y_0) & \mapsto \Phi'(y_0) = y(t)
+		               \end{array} \right.
+		\]
+	 where $t\mapsto y(t) \in C^1 (\R,\R^d)$ is the unique (global) solution of the IVP $\dot y = f(y)$. $y(0) = y_0$ is the \emph{evolution operator} for the autonomous ODE $\dot y = f(y)$
+	\end{definition}
+
+\section{Euler Methods}
+	\begin{description}
+	 \item[Idea] \emph{timestepping}: successive approximation of evolution on small intervals $[t_{k-1},t_k]$
+	 
+	 Approximation of solution on $[t_{k-1},t_k]$ by \emph{tangent} curve to current global condition.
+	 
+	\end{description}
+	\begin{fmerke}[Explicit Euler Method] 
+	 Explicit euler method generates a sequence by the recursion:
+	 \[
+	  y_{k+1} = y_k + h_k f(t_k,y_k)\qquad k = 0, \ldots, N-1
+	 \]
+	 with  local \emph{timestep} $ h_k = t_{k+1}-t_k$
+	\end{fmerke}
+	
+	\begin{fmerke}[Implicit Euler Method]
+	 \[
+	  y_{k+1} = y_k + h_k f(t_{k+1},y_{k+1})
+	 \]
+
+	\end{fmerke}
+
+\section{Convergence of Single Step Methods}
+	\[
+	  e_{k+1} = \Psi^{h_k} y_k - \Psi^{h_k} y(t_k)  = 
+		\underbrace{\Psi^{h_k}y_k - \Psi^{h_k}y(t_k) }_{\text{propagated error}} + \underbrace{\Psi^{h_k}y(t_k)-\Psi^{h_k}y(t_k)}_{\text{one-step erro}}
+	\]
+
+
+\section{Runge-Kutta Methods}
+\[
+ \left. \begin{array}{ll}
+         \dot y (t) &= f(t,y(t))\\
+         y(t_0) &= y_0 
+        \end{array} \right\} \quad \Rightarrow \quad y(t_1) = y_0 +\int_{t_0}^{t_1} f(\tau, y(\tau))d\tau
+\]
+\paragraph{Idea} Approximate integral by means of $s$-point quadratur formula defined on reference interval $[0,1]$ with nodes $c_1,\ldots,c_s$ and weights $b_1,\ldots,b_s$
+\[
+ y(t_1) \approx y_1 = y_0 +h\sum_{i=1}^s b_i f\bigl( t_0+c_ih,y(t_0+c_ih)\bigr) \qquad h = t_1 -t_0
+\]
+Get $y(t_0+c_ih)$ by \emph{bootstrapping}.

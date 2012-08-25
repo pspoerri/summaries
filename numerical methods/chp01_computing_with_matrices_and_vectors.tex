@@ -1,0 +1,122 @@
+\part{Computing with Matrices and Vectors}
+	\section{Vectors}
+			\begin{align*}
+				\text{Column vector} &= \begin{pmatrix} x_1 \\
+				                         \hdots\\
+				                         x_n
+				                        \end{pmatrix} \in \K^n \\
+				\qquad \text{Row Vector} &= \left( x_1 \ \ldots \ x_n \right)
+			\end{align*}
+
+			Initialization of vectors in matlab
+			\begin{lstlisting}[language=matlab]
+				column_vector = [1;2;3];
+				row_vector    = [1,2,3];
+			\end{lstlisting}
+		\section{Matrices}
+			A $n \times m$ Matrix:
+			\begin{align*}
+			 \mathbf A = \begin{pmatrix}
+			      a_{11} & \ldots 	& a_{1m}\\
+			      \hdots & 			& \hdots\\
+			      a_{n1} & \ldots 	& a_{nm}
+			     \end{pmatrix} \in \K^{n,m}
+			\end{align*}
+			Accessing matrix and sub-matrices
+			\begin{description}
+			 \item[Single entry] $(\mathbf A)_{i,j} = a_{i,j}$, 
+				\begin{description}
+				 \item $i$: Row (Zeile)
+				 \item $j$: Column (Spalte)
+				\end{description}
+			 \item[$\mathbf i$-th row] $(\mathbf A)_{i,:}$
+			 \item[$\mathbf j$-th column] $(\mathbf A)_{:,j}$
+			\end{description}
+			\paragraph{Types} There are two different matrix storage formats used in matlab
+				\begin{description}
+					\item[normal] data is placed in a one-dimensional array using the row major format.
+					\item[sparse] Compressed row-storage (CRS) format. Space: $O(n+m)$, Access time: $O(n)$
+				\end{description}
+
+		\section{Elementary operations}
+			\begin{description}
+			 \item[dot product] $x \cdot y = x^H y = \sum_{i=1}^n \overline x_i y_i \in K$ 
+			 \item[tensor product] $x y^H = (x_i  \overline y_j)_{i = 1, \ldots, m \ j = 1, \ldots, n} \in \K^{m,n}$
+			 \item[row scaling] multiplication with a diagonal matrix from left
+				\begin{align*}
+					\begin{pmatrix}
+					 d_1 	&  0	&\ldots	& 0\\
+					 0		& d_2	& 		& 0\\
+					 \vdots &  		&		& \vdots\\
+					 0 		& 0 	&		& d_n
+					\end{pmatrix}
+					\begin{pmatrix}
+					 a_{11}	& a_{12} & \ldots & a_{1m}\\
+					 a_{21} & a_{22} &		  & a_{2m}\\
+					 \vdots &		 &		  & \\
+					 a_{n1} & a_{n2} & \ldots & a_{nm}
+					\end{pmatrix} = 
+						\begin{pmatrix}
+							d_1 a_{11}	& d_1 a_{12} & \ldots & d_1 a_{1m}\\
+							d_2 a_{21} & d_2 a_{22} &		  & d_2 a_{2m}\\
+							\vdots &		 &		  & \vdots\\
+							d_n a_{n1} & d_n a_{n2} & \ldots & d_n a_{nm}
+						\end{pmatrix}
+				\end{align*}
+			 \item[column scaling] multiplication with diagonal matrix from right
+				\begin{align*}
+					\begin{pmatrix}
+					 a_{11}	& a_{12} & \ldots & a_{1m}\\
+					 a_{21} & a_{22} &		  & a_{2m}\\
+					 \vdots &		 &		  & \\
+					 a_{n1} & a_{n2} & \ldots & a_{nm}
+					\end{pmatrix} 
+					\begin{pmatrix}
+					 d_1 	&  0	&\ldots	& 0\\
+					 0		& d_2	& 		& 0\\
+					 \vdots &  		&		& \vdots\\
+					 0 		& 0 	&		& d_m
+					\end{pmatrix}	= 
+						\begin{pmatrix}
+							d_1 a_{11}	& d_2 a_{12} & \ldots & d_m a_{1m}\\
+							d_1 a_{21} & d_2 a_{22} &		  & d_m a_{2m}\\
+							\vdots &		 &		  & \vdots\\
+							d_1 a_{n1} & d_2 a_{n2} & \ldots & d_m a_{nm}
+						\end{pmatrix}
+				\end{align*}
+			\end{description}
+		\subsection{Matrix multiplication rules}
+			The matrix product is
+			\begin{description}
+			 \item[associative] $(AB)C = A(BC)$
+			 \item[bi-linear] $(\alpha A+\beta B)C = \alpha(AC) + \beta(BC)$, $C(\alpha A +\beta B) = \alpha(CA)+\beta(CB)$
+			 \item[non-commutative] $AB \neq BA$ 
+			\end{description}
+	\section{Complexity}
+		\begin{center}
+			\begin{tabular}{r|c|c|c|c}
+				operation			& description						& \# mult/div & \# add/sub	& complexity\\ \hline
+				dot product			& $(x, y \in \K^n) \mapsto x^H y$	& $n$		 & $n-1$		& $O(n)$\\
+				tensor product		& $(x \in \K^m, y\in K^n) \mapsto xy^H$& $nm$	 & $0$			& $O(nm)$\\
+				matrix product		& $(A \in \K^{n,m}, B \in \K^{n,k}) \mapsto AB$& $nmk$&$mk(n-1)$& $O(nmk)$
+			\end{tabular}
+		\end{center}
+		\subsection{Reading the complexity from a plot}
+		Plot the time measurements for different $t_i = time(f(n_i))$ for different $n_1, n_2, \ldots, n_k$, $n_i \in \N$
+		
+		\begin{center}
+			\begin{tabular}{r|ll}
+				plot		& function		& complexity\\ \hline
+				loglog		& straight line	& $O(n^\alpha)$ for some $\alpha$\\
+				semilog		& straight line & $O(\alpha^n)$ form some $\alpha$
+			\end{tabular}
+		\end{center}
+
+\section{Numerical stability}
+	\begin{definition}[Stable algorithm]
+		An Algorithm $G$ for solving a problem $F: X\mapsto Y$ is \emph{numerically stable}, if for all $x\in X$ its result $G(x)$ is the exact result for ``slightly perturbed'' data:
+		\begin{align*}
+		 \exists C \approx 1:\ \forall x \in X:\ \exists \hat{x} \in X: \ ||x- \hat x || \leq C eps||x|| \land G(x) = F(\hat x)
+		\end{align*}
+
+	\end{definition}

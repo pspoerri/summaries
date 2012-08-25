@@ -1,0 +1,220 @@
+\part{Theory}
+% \section{Theory}
+	\section{Vector norms and matrix norms}
+		\begin{definition}[Norm]
+			$X$= vector space over field $\K$, $\K = \R, \ \C$. A map $|| \cdot ||: X \mapsto \R_0^+$ is a \emph{norm} on $X$, if it satisfies
+			\begin{enumerate}
+			 \item $\forall x \in X: x \neq 0	\quad \Longleftrightarrow \quad ||x|| > 0$
+			 \item $||\lambda x|| = |\lambda| \ ||x||$ $\ \forall x \in X,\ \lambda \in \K$
+			 \item $||x+y|| \leq ||x|| + ||y|| \ \forall x,y \in X$
+			\end{enumerate}
+		\end{definition}
+		\begin{center}
+			\begin{tabular}{rll}
+			 Name			& Definition		& Matlab function\\ \hline
+			 Euclidean norm & $||\vec x||_2 = \sqrt{|x_1|^2 + \ldots |x_n|^ 2}$ & \verb|norm(x)|\\
+			 $1$-Norm		& $||\vec x||_1 = |x_1| + \ldots |x_n|$ & \verb|norm(x,1)|\\
+			 $\infty$-norm, $\max$-norm& $||\vec x||_\infty = \max \{ |x_1|, \ldots, |x_n|\}$& \verb|norm(x,inf)|
+			\end{tabular}
+		\end{center}
+		
+		\begin{definition}[Matrix norm]
+			Given a vector norm $|| \cdot ||$ on $\R^n$, the associated \emph{matrix norm} is defined by
+			\begin{align*}
+			 \mathbf M \in \R^{m,n}: \quad ||\mathbf M ||:= \sup_{x \in \R^n \setminus \{0\}} \frac{\mathbf M x}{||x||}
+			\end{align*}
+		\end{definition}
+		
+		\begin{definition}[Condition (number) of a matrix]
+		 \emph{Condition} of a matrix $\mathbf{A}\in \R^{n,n}$:
+		 \begin{align*}
+		  cond(\mathbf A) := ||\mathbf A^{-1}|| \ ||\mathbf A ||
+		 \end{align*}
+		\end{definition}
+		
+		\begin{center}
+			$cond(\mathbf A)  \gg 1 \qquad \Longleftrightarrow \qquad$ columns/rows of $\mathbf A$ ``almost linearly dependent''
+		\end{center}
+
+		\begin{definition}[Symmetric positive definite (s.p.d.) matrices]
+		 $\mathbf M \in \K^{n,n}$ is \emph{symmetric (Hermitian) positive definite }if
+		 \begin{align*}
+		  \mathbf M = \mathbf M^H \ \land \ x^H \mathbf M x > 0 \quad \Longleftrightarrow \quad x \neq 0
+		 \end{align*}
+		 If $x^H \mathbf M x \geq 0$ for all $x \in \K^n$  $\Longrightarrow$ $\mathbf M$ positiv semi-definite.
+		\end{definition}
+		
+		\begin{lemma}[Necessary conditions for s.p.d. matrices]
+		 For a symmetric/hermitian positiv definite matrix $\mathbf M = \mathbf{M}^H$ holds true:
+		 \begin{enumerate}
+		  \item $m_{ii} > 0$, $i=1,\ldots,n$
+		  \item $m_{ii}m_{jj} - |m_{ij}|^2 > 0$ <-- steht so im skript ist wahrscheinlich aber falsch
+		  \item All eigenvalues of $\mathbf M$ are positive.
+		 \end{enumerate}
+		\end{lemma}
+		
+		\begin{definition}[Diagonally dominant matrix]
+		 $\mathbf A \in \K^{n,n}$ is \emph{diagonally dominant}, if
+		 \begin{align*}
+		  \forall k \in \{1, \ldots, n\}: \quad \sum_{j\neq k} |a_{kj}| \leq |a_{kk}|
+		 \end{align*}
+		 The matrix $\mathbf A$ is called \emph{strictly diagonally dominant} id
+		 \begin{align*}
+		  \forall k \in \{1, \ldots, n \}: \quad \sum_{j\neq k} |a_{kj}| < |a_{kk}|
+		 \end{align*}
+		\end{definition}
+		
+		\begin{lemma}[Lemma] 
+			A diagonally dominant Hermitian/symmetric matrix with non-negative diagonal entries is positive semi-definit.
+		\end{lemma}
+
+		\begin{definition}[Positiv Semidefinite]
+			A \emph{diagonally dominant} Hermitian/symmetric matrix with \emph{non-negative diagonal entries} is positive semi-definite.
+		\end{definition}
+
+		\begin{theorem}[Gaussian elimination for s.p.d. matrices]
+		 Every symmetric/Hermitian positive definite matrix possesses an LU-decomposition.
+		\end{theorem}
+
+		\begin{lemma}[Cholesky decomposition for s.p.d. matrices]
+		 For any s.p.d $\mathbf{A} \in \K^{n,n}$ there is a unique upper triangular Matrix $\mathbf R \in \K^{n,n}$ with $r_{ii} > 0$ $i=1, \ldots n$ such that $\mathbf A = \mathbf{R}^H \mathbf R$
+		\end{lemma}
+		
+		\begin{definition}[Unitäry und orthogonal matrices]
+			\begin{description}
+			 \item[$\mathbf Q \in \K^{n,n}$] is \emph{unitary}, if $\mathbf Q^{-1} = \mathbf Q^H$
+			 \item[$\mathbf Q \in \R^{n,n}$] is \emph{orthogonal}, if $\mathbf Q^{-1} = \mathbf Q^T$
+			\end{description}
+		\end{definition}
+		
+		\begin{theorem}[Criteria for Unitarity]
+		 \begin{align*}
+		  \mathbf Q \in \C^{n,n} \quad \text{unitary} \qquad \Longleftrightarrow \qquad ||\mathbf Q x ||_2 = ||x||_2\ \forall x \in \K^n
+		 \end{align*}
+		\end{theorem}
+				
+		\begin{notice}[Properties of an unitary/orthogonal matrix]
+		 If $\mathbf Q \in K^{n,n}$ is unitary, then
+		 \begin{itemize}
+		  \item $\mathbf Q^T \mathbf Q = \mathbf Q \mathbf Q^T = \mathbf I$
+		  \item $cond(\mathbf Q) = 1$
+		  \item all rows/columns (regardes as vectors $\in \K^n$ have Euclidean norm$=1$
+		  \item all rows are pairwise orthogonal
+		  \item $|det \mathbf Q| = 1$ and all eigenvalues $\in \{z \in \K: |z| = 1\}$
+		  \item $||\mathbf{QA}||_2 = ||\mathbf A||_2$ for any matrix $\mathbf A \in \K^{n,m}$
+		 \end{itemize}
+
+		\end{notice}
+
+
+
+
+
+	\section{Givens Rotations}
+		Let $\mathbf A$ be a matrix in $\R^{n,n}$ (im not sure if $\K$ is allowed here). The idea is to rotate the columns of $\mathbf A$, in such a way that they stand orthogonal to each other.
+
+		\paragraph{Idea} Given $(a,b)^T \in \R^2 \setminus \{0\}$. Find $c,\ s \in \R$ with
+			\begin{align*}
+			 \underbrace{
+				\begin{pmatrix}
+					c & s\\
+					-s&c 
+				\end{pmatrix}}_{\mathbf C}
+					\begin{pmatrix}
+						a\\
+						b
+					\end{pmatrix} = \begin{pmatrix}
+										r\\
+										0
+									\end{pmatrix}
+			\end{align*}
+			and $c^2+s^2 = 1$. Apparently $\mathbf C$ is orthogonal.
+
+			Because of the condition $c^2+s^2 = 1$ it is apparent to represent
+			\begin{align*}
+				c = \cos \varphi \qquad s = \sin \varphi
+			\end{align*}
+			Since a rotation doesn't change the length of a vector follows:
+			\begin{align*}
+				|r| = ||(r,0)^T||_2 = ||(a,b)^T||_2 = \sqrt(a^2+b^2)
+			\end{align*}
+			It's now easy to get the solution for the problem above:
+			\begin{align*}
+				r &= \pm \sqrt(a^2+b^2)\\
+				c &= \frac{a}{r}\\
+				s &= \frac{b}{r}
+			\end{align*}
+
+			The givens rotation matrix can now be represented through
+			\begin{align*}
+				\mathbf G_{i,k} =
+					\left(\begin{array}{ccccccccccc}
+						1 & 	& & i\downarrow &&&&k\downarrow	\\
+						  & \ddots \\
+						  &		  &1&\\
+						  &	i\rightarrow	&	& c	& 0 & \cdots & 0 & s\\
+						  &		&	& 0 & 1 &		 &	 & 0\\
+						  &		&	&\vdots& &\ddots&	 &\vdots\\
+						  &		&	& 0 & 	&		 & 1 & 0\\
+						  &	k\rightarrow 	&	& -s& 0 &\cdots &0 &c\\
+						  &		&	&   &   &       &  & & 1\\
+						  &		&	&   &   &       &  & & & \ddots\\
+						  &		&	&   &   &       &  & & & & 1
+					\end{array}\right)
+			\end{align*}
+
+			\begin{align*}
+				\mathbf G_{i,k} \begin{pmatrix}
+				        	x_1\\
+				        	x_2\\
+				        	\vdots\\
+				        	x_m
+				        \end{pmatrix} =
+				        \begin{pmatrix}
+				        	x_1\\
+				        	\vdots\\
+				        	x_{i-1}\\
+				        	r\\
+				        	x_{i+1}\\
+				        	\vdots\\
+				        	x_{k-1}\\
+				        	0\\
+				        	x_{k+1}\\
+				        	\vdots\\
+				        	x_m
+				        \end{pmatrix}
+			\end{align*}
+\section{Eigenvalues}
+	\begin{definition}[Eigenvalues und Eigenvectors]
+	 \begin{description}
+	  \item[Eigenvalue] $\lambda \in \C$ of $\mbf A \in \K^{n,n} \quad :\Leftrightarrow  \quad \det(\lambda \mbf I - \mbf A) = 0$
+	  \item[Spectrum] of $\mbf A \in \K^{n,n}: \sigma(\mbf A):= \{\lambda \in \C:$ eigenvalue of $\mbf A\}$ (= Menge aller Eigenwerte)
+	  \item[Eigenspace] associated with eigenvalue $\lambda \in \sigma(\mbf A)$
+		\[
+		 Eig_{\mbf A}(\lambda) := Ker(\lambda \mbf I - \mbf A
+		\]
+	  \item[Eigenvetor] $x\in Eig_{\mbf A}(\lambda) \ \{0\}$
+	 \end{description}
+	\end{definition}
+	
+	\begin{lemma}[Gershgorin circle theorem]
+		For any $\mbf A \K^{n,n}$
+		\[
+		\sigma(\mbf A) \subset \bigcup_{j=1}^n \left\{z \in \C: |z-a_{jj}| \leq \sum_{i\neq j} |a_{ji}|\right\}
+		\]
+	\end{lemma}
+	
+	\begin{lemma}[Similarity and spectrum]
+	 The spectrum of a matrix is invariant with respect to \emph{similarity transformations}
+	 \[
+	  \forall \mbf A \in \K^{n,n}: \sigma(\mbf S^{-1} \mbf A \mbf S) = \sigma(\mbf A) \forall \text{ regular } \mbf S \in \K^{n,n}
+	 \]
+	\end{lemma}
+	
+	\begin{theorem}[Schur normal form]
+		\[
+		 \forall \mbf A: \exists \mbf U \in \C^{n,n} \text{ unitary }: \quad \mbf U^H \mbf A \mbf A = T \qquad \text{with} \mbf T \in \C^{n,n} \text{ upper triangular}
+		\]
+	\end{theorem}
+	
+	A matrix $\mbf A \in \K^{n,n}$ with $\mbf{AA}^H = \mbf A^H \mbf A$ is called \emph{normal}.

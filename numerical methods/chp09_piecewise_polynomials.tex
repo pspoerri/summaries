@@ -1,0 +1,183 @@
+\part{Piecewise Polynomials}
+\begin{description}
+ \item[Perspective] Data Interpolation
+ \item[Problem] Model a functional relation: $f:I \subset \R \mapsto \R$ from the (exact) measurments $(t_i, y_i)$, $i = 0, \ldots, n$. \emph{Interpolation constraint} $f(t_i) = y_i \ \forall i$
+\end{description}
+
+\paragraph{Goal} Shape preserving interpolation
+	\begin{align*}
+	 \text{positive data} \qquad &\rightarrow \qquad \text{positive interpolant } f\\
+	 \text{monotonic data} \qquad &\rightarrow \qquad \text{monotonic interpolant } f\\
+	 \text{convex data}\qquad  &\rightarrow \qquad \text{convex interpolant }f\\
+	\end{align*}
+
+
+\section{Piecewise Lagrange Interpolation}
+	\subsection{Piecewise Linear Interpolation}
+		\begin{description}
+		\item[Data] $(t_i,y_i) \in \R^2,\ i=0, \ldots, n,\ n \in \N,\ t_0 < t_1 <\cdots <t_n$
+		\item[Piecewise linear interpolant] connect the dots with direct lines.
+			\[
+			s(x) = \frac{(t_{i+1}-t)y_i + (t-t_i)y_{i+1}}{t_{i+1}-t_i} \qquad t\in [t_i, t_{i+1}]
+			\]
+		\end{description}
+		
+	\subsection{Piecewise Polynomial Interpolation}
+		Use a polynom instead of a direct line.
+
+
+\section{Cubic Hermite Interpolation}
+
+	\begin{description}
+	 \item[Given] Mesh points $(t_i,y_i)\in \R^2,\ i = 0,\ldots,n,\ t_0 < t_1 < \ldots < t_n$
+	 \item[Goal] Function $f\in \C^1([t_0,t_n]), f(t_i) =y_i,\ i=0,\ldots, n$
+	 \[
+	  	  s(t) = y_{i-1}H_1(t) + y_i H_2(t) +c_{i-1} H_3(t) + c_iH_4(t),\qquad t\in[t_{i-1},t_i]\\
+	 \]
+
+	 \begin{align*}
+	  H_1(t) &= \phi\left(\frac{t_i -t }{h_i}\right)\\
+  	  H_2(t) &= \phi\left(\frac{t -t_{i-1}}{h_i}\right)\\
+	  H_3(t) &= -h_i\theta\left(\frac{t_i -t }{h_i}\right)\\
+	  H_4(t) &= h_i\theta\left(\frac{t -t_{i-1}}{h_i}\right)\\
+	  h_i &= t_i - t_{i-1}\\
+	  \phi(\tau) &= 3 \tau^2 - 2 \tau^3\\
+	  \theta(\tau) &= \tau^3 - \tau^2
+	 \end{align*}	
+	 Choose slopes $c_i$ according to specification. For example:
+	 \begin{align*}
+	  c_i &= \left\{ \begin{array}{ll}
+	                 \Delta_1 &\text{ for }i=0\\
+	                 \Delta_n &\text{ for }i=n\\
+	                 \frac{t_{i+1}-t_i}{t_{i+1}-t_{i-1}}\Delta_i + \frac{t_i - t_{i-1}}{t_{i+1}-t_{i-1}}\Delta_{i+1} &\text{ if }i\leq i < n
+	                \end{array}
+	                \right. \\
+			\Delta_j &= \frac{y_j - y_{j-1}}{t_{j}-t_{j-1}}
+	 \end{align*}
+	\end{description}
+	
+	\subsection{Shape Preserving Hermite Interpolation}
+		Hermite interpolation does not preserve monotonicity. Choose a different formula for the slopes:
+		\[
+		 c_i = \left\{ \begin{array}{ll}
+		                0 & \text{ if } sgn(\Delta_i) \neq sgn(\Delta_{i+1})\\
+		                \frac{1}{\tfrac{w_a}{\Delta_i}+\tfrac{w_b}{\Delta_{i+1}}} \qquad  \text{{\small(weighted average)}}&\text{ otherwise }\quad (w_a+w_b=1)
+		               \end{array}  \right.
+		\]
+		Concrete choice of weights:
+		\[
+		 w_a = \frac{2h_{i+1}+h_i}{3(h_{i+1}+h_i)} \qquad w_b = \frac{h_{i+1}+2h_i}{3(h_{i+1}+h_i)} \qquad \qquad \text{ Matlab Function: pchip}
+		\]
+
+\section{Splines}
+	\begin{definition}[Spline Space]
+	 Given an interval $I=[a,b] \subset \R$ and a \emph{mesh} $\mathcal{M}:= \{a = t_0 <t_1 < \ldots < t_{n-1} < t_n = b\}$, the vector space $\mathcal S_{d,\mathcal M}$ of the \emph{spline functions} of degree $d$ (or order $d+1$ is defined by
+	 \[
+	  \mathcal S_{d,\mathcal m} := \left\{ s \in C^{d-1}(I):\ s_j = s_{|[t_{j-1},t_j]} \in \mathcal P_d \ \forall j = 1,\ldots, n\right\}
+	 \]
+	\end{definition}
+	\begin{align*}
+	 d=0 &:\text{$\mathcal M$-piecewise constant \emph{discontinuous} functions}\\
+	 d=1 &:\text{$\mathcal M$-piecewise linear \emph{continuous} functions}\\
+	 d=2 &:\text{continously differentiable $\mathcal M$-piecewise quadratic functions}
+	\end{align*}
+	\begin{fmerke}[Dimension of Spline Space] 
+	 Dimension of spline space by \emph{counting argument}
+	 \[
+	  dim \mathcal S_{d,\mathcal M} = n \cdot dim \mathcal P_d - \#\{C^{d-1} \text{continuity constraints}\} = n\cdot (d+1) - (n-1) \cdot d = n+d
+	 \]
+	\end{fmerke}
+	
+	\subsection{Cubic Spline Interpolation}
+		Special case of Spline interpolation. Since $C^2$-functions are perceived as smooth. Choose $d=3$. \\
+		
+		Reuse representation through cubic Hermite basis polynomials:
+		\[
+		 s_{[t_{j-1},t_j]}(t) = s(t_{j-1}) \cdot (1-3\tau^2+2\tau^3) +s(t_j) \cdot (3 \tau^2-2\tau^3) + h_j s'(t_{j-1})\cdot (\tau -2\tau^2+\tau^3)+h_js' (t_j)\cdot(-\tau^2 +\tau^3)
+		\]
+		with $h_j = t_j - t_{j-1}$ and $\tau = (t-t_{j-1})/h_j$\\
+		
+		\textbf{Produces Linear $\mathbf{n-1}$ \emph{linear} equations for $\mathbf n$ slopes}
+		\[
+		 \frac{1}{h_j} c_{j-1} + \left( \frac{2}{h_j}+ \frac{2}{h_{j+1}}\right) c_j + \frac{1}{h_{j+1}}c_{j+1} = 3 \left( \frac{y_j -y_{j-1}}{h_j^2}+\frac{y_{j+1}-y_j}{h_{j+1}^2}\right) \qquad \qquad c_j = s'(t_j)
+		\]
+
+		\begin{align*}
+		 \begin{pmatrix}
+		  b_0 & a_1 & b_1 	& 0    	&\cdots&\cdots	&\cdots	 &0 \\
+		  0   & b_1 & a_2 	& b_2	&0     &		&		 &\vdots\\
+		\vdots& 0   &\ddots &\ddots	&\ddots&\ddots	&		 &\vdots\\
+		\vdots&		&\ddots	&\ddots &\ddots&\ddots	&\ddots	 & \vdots\\
+		\vdots&		&		&0     &b_{n-3}&a_{n-1}&b_{n-2} &0\\
+		  0   &\cdots&\cdots&\cdots&0    &b_{n-2}&a_0	 &b_{n-1}
+		 \end{pmatrix}
+		 \begin{pmatrix}
+		  c_0\\
+		  \vdots\\
+		  \vdots\\
+		  \vdots\\
+		  c_n
+		 \end{pmatrix}
+			&=
+	\begin{pmatrix}
+		3 \left( \frac{y_1 -y_{0}}{h_1^2}+\frac{y_{2}-y_1}{h_{2}^2}\right)\\
+		\vdots\\
+		\vdots\\
+		\vdots\\
+		\vdots\\
+		3 \left( \frac{y_{n-1}-y_{n-2}}{h_{n-1}^2}+\frac{y_{n}-y_{n-1}}{h_{n}^2}\right)
+	\end{pmatrix}\qquad \Rightarrow
+			\left\{
+				\begin{array}{l}
+					a_j = \frac{1}{h_j}\\
+					b_j = \frac{2}{h_j}+\frac{2}{h_{j+1}}
+				\end{array}
+			\right.
+		\end{align*}
+	Two additional constraints are required, three different choices are possible (put them into the LSE above):
+	\begin{description}
+	 \item[Complete cubic spline interpolation]
+		\begin{align*}
+			s'(t_0) &= c_0\\
+			s'(t_n) &= c_n
+		\end{align*}
+	 \item[Natural cubic spline interpolation] 
+		\begin{align*}
+		 s''(t_0) = s''(t_n) = c_n \qquad \Rightarrow \left\{
+			\begin{array}{l}
+			 \frac{2}{h_1}c_0 + \frac{1}{h_1}c_1 = 3\frac{y_1-y_0}{h_1^2}\\
+			 \frac{1}{h_n}c_{n-1}+\frac{2}{h_n}c_n = 3\frac{y_n-y_{n-1}}{h_n^2}
+			\end{array}\right.
+		\end{align*}
+	 \item[Periodic cubic spline interpolation]
+		\begin{align*}
+			s'(t_0) &= s'(t_n)\\
+			s''(t_0) &= s''(t_n) 
+		\end{align*}
+		produces an $n\times n$-linear system with s.p.d. coefficient matrix: TODO: REDO MATRIX %pdf page 729
+		\begin{align*}
+		 \begin{pmatrix}
+		  a_1 & b_1  & 0 	&\cdots&0	 	&b_0 \\
+		  b_1 & a_2  & b_2 	&\ddots&   		&0\\
+		     0& b_2  &\ddots&\ddots&\ddots  &\vdots\\
+		\vdots&\ddots&\ddots&\ddots&b_{n-2}	& 0\\
+			 0&		 &\ddots&b_{n-2}&a_{n-1}&b_{n-1}\\
+		  b_0 &0	 &\cdots&0     &b_{n-1} &a_0
+		 \end{pmatrix}
+		\end{align*}
+		Matlab function: v = spline(t,y,x)
+	\end{description}
+
+	\subsection{Shape Preserving Spline Interpolation}
+		Since the cubic spline interpolant is \emph{not} monotonicty or curvature-preserving. We  fix the slopes $c_i$ in the nodes using the harmonic mean of data slopes $\Delta_j$, the final interpolant will be tangents of these segments in the points $(t_i,y_i$. If $(t_i,y_i)$ is a local maximum or minimum of the data, $c_j$ is set toi zero.
+		\begin{align*}
+		 c_i &= \left\{ \begin{array}{ll}
+		                 \frac{2}{\Delta_i^{-1}+\Delta_{i+1}^{-1}} &\text{ if }sign(\Delta_i) = sign(\Delta_{i+1})\\
+		                 0 & \text{ otherwise}
+		                \end{array}\right.\\
+		 c_0 &= 2\Delta_1 - c_1\\
+		 c_n &= 2\Delta_n - c_{n-1}\\
+		 \Delta_j &= \frac{y_j-y_{j-1}}{t_j-t_{j-1}}
+		\end{align*}
+
+

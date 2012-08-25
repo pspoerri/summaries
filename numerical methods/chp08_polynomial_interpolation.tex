@@ -1,0 +1,82 @@
+\part{Polynomial Interpolation}
+
+\section{Polynomials}
+	\[
+	 \mathcal P_k := \{ t\mapsto a_k t^k + a_{k-1} t^{k-1} + \cdots + a_0, \ a_j \in \K
+	\]
+
+	\begin{theorem}[Dimension of Space of Polynomials]
+	 \[
+	  \dim \mathcal P_j = k+1 \qquad \text{ and } \qquad \mathcal P_k \subset C^\infty (\R)
+	 \]
+	\end{theorem}
+	
+	Matlab:
+	\[
+	 a_k t^k + a_{k-1} t^{k-1} + \cdots + a_0 \quad \text{(use horner schema to calculate)}
+	\]
+	\begin{lstlisting}
+	 polyval(p,x);
+	\end{lstlisting}
+\section{Polynomial Interpolation: Theory}
+	Given: Simple nodes $t_0, \ldots, t_n$, $n \in \N$, $-\infty < t_0 < t_1 < \cdots < t_n < \infty$ and the values $y_0, \ldots, y_n \in \K$ compute $p \in \mathcal P_n$ such that
+		\[
+		 p(t_j) = y_j \qquad \text{for }j=0, \ldots n
+		\]
+
+	\subsection{Lagrange Polynomials}
+		For \emph{nodes} $t_0 < t_1 < \cdots < t_n$ consider
+		\[
+		 \textbf{Lagrange Polynomials: }\ L_i (t) = \prod_{j=0\ \land \ j \neq i}^n \frac{t-t_j}{t_i-t_j}
+		\]
+
+\section{Chebychev Interpolation}
+	\begin{definition}[Chebychev Polynomial]
+	 The $n^{th}$ \emph{Chebychev Polynomial} is 
+	 \begin{align*}
+		T_n (t) &= \cos(n \arccos(t)) \qquad -1 \leq t \leq 1\\
+		\text{Zeros of }T_n: \qquad t_k &= \cos \left( \frac{2k-1}{2n}\pi\right),\quad k=1, \ldots, n	  
+	 \end{align*}
+	\end{definition}
+	
+	\paragraph{Scaling argument}
+	\[
+	 [-1,1] \xrightarrow{\hat t \mapsto t:= a + \frac{1}{2}(\hat t+1)(b-a) } [a,b] \qquad \hat f(\hat t) := f(t)
+	\]
+
+	\subsection{Computational Aspects}
+		\begin{theorem}[Orthogonality of Chebychef polynomials]
+			The Chebychef polynomials are orthogonal with respect to the scalar product
+			\[
+			 \left< f,g \right> = \int_{-1}^1 f(x) g(x)\frac{1}{\sqrt{1-x^2}} dx
+			\]		 
+		\end{theorem}
+
+		\begin{theorem}[Representation formula]
+		 The interpolation polynomial $p$ of $f$ in the Chebychev nodes $x_0, \ldots, x_n$ (the zeros of $T_{n+1}$ is given by:
+		 \[
+		  p(x) = \frac{1}{2}c_0 + c_1 T_1(x) + \ldots c_n T_n(x)
+		 \]
+		 with
+		 \[
+		  c_k = \frac{2}{n+1}\sum_{t=0}^n f \left( \cos\left(\frac{2l+1}{n+1}\cdot \frac{\pi}{2}\right) \right) \cdot \cos \left( k\frac{2l+1}{n+1}\cdot \frac{\pi}{2}\right)
+		 \]
+		\end{theorem}
+		
+		\begin{theorem}[Clenshah algorithm]
+		Let $p\in \mathcal P_n$ be an arbitrary polynomial
+		\[
+		 p(x) = \frac{1}{2}c_0 +c_1 T_1(x) +\ldots + c_n T_n(x)
+		\]
+		 Set
+		 \begin{align*}
+		  d_{n+2} &= d_{n+1} = 0\\
+		  d_k &= c_k+(2x)\cdot d_{k+1}-d_{k+2} \qquad \text{for } k=n, n-1,\ldots,0
+		 \end{align*}
+		 Then
+		 \[
+		  p(x) = \frac{1}{2}(d_0-d_2)
+		 \]
+		 The Clenshaw algorithm is numerically stable
+		\end{theorem}
+

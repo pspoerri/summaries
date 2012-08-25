@@ -1,0 +1,112 @@
+\part{Eigenvalues}
+
+\section{''Direct`` Eigensolvers}
+	All ''direct`` eigensolvers are iterative methods
+	\begin{lstlisting}
+	 function d= eigqr(A,tol)
+		n = size(A,1);
+		while (norm(tril(A,-1))> tol*norm(A))
+			shift = A(n,n);
+			[Q,R] = qr(A-shift*eye(n));
+			A = Q'*A*Q;
+			tril(A,-1)
+		end
+		d = diag(A);
+	end
+	\end{lstlisting}
+
+\section{Power Methods}
+	\subsection{Direct Power Method}
+		\begin{description}
+		 \item[Initial Guess] $z^{(0)}$ ''arbitrary``
+		 \item[Next Iterate] $w = A z^{(k-1)}$, $z^{(k)} = \frac{w}{\norm{w}_2}$
+		\end{description}
+		Computes the eigenvector for $\lambda_{max}$. Get eigenvalue through raleigh quotient.
+	\begin{definition}[Raleigh Quotient]
+	 \[
+	  p_{\mbf A}(u) = \frac{u^H \mbf A u}{u^H u}
+	 \]
+	 If $\lambda \in \sigma(\mbf A)$ and $z \in Eig_{\lambda}(\mbf A)$ then $p_\mbf{A}(z) = \lambda$.
+	\end{definition}
+
+		\subsubsection{Normalized Cut}
+			\begin{description}
+			\item[Pixel set] $\mathcal V: \{1,\ldots,nm\}$
+			\item[Indexing] (since all pixels are saved in a row )
+				\[
+				k = index(pixel_{i,j}) = (i-1)n + j
+				\]
+			\item[Notation]
+				\[
+				p_k = (\mbf P)_{ij}\qquad k = 1, \ldots, nm
+				\]
+			\end{description}
+			
+			\paragraph{Local similarity matrix}
+				$\mbf W \in \R^{N,N}$ where as $N = nm$.
+				\[
+				(\mbf W)_{i,j} = \left\{
+					\begin{array}{ll}
+					0 &\text{ if pixels $i$, $j$ not adjacent}\\
+					0 &\text{ if $i=j$}\\
+					\sigma(p_i,p_j) &\text{ if pixels $i$ and $j$ adjacent}
+					\end{array} \right.
+				\]
+				$\sigma$ is a \emph{similarity function}
+				\[
+				\sigma(x,y) = e^{-\alpha(x-y)^2} \qquad \alpha > 0 
+				\]
+			\begin{definition}[Normalized Cut]
+			For $\mathcal X \subset \mathcal V$ we define the normalized cut as
+			\[
+			Ncut(\mathcal{X}) = \frac{cut(\mathcal X)}{weight(\mathcal X)} + \frac{cut(\mathcal X)}{weight(\mathcal V \setminus \mathcal X)}
+			\]
+			with
+			\[
+			cut(\mathcal X) = \sum_{i \in \mathcal X,\ j \notin \mathcal X} w_{ij}, \qquad weight(\mathcal X) = \sum_{i \in \mathcal X,\ j \in \mathcal V} w_{ij}
+			\]
+			\end{definition}
+			
+			\paragraph{Segmentation problem} find 
+				\[
+				\mathcal X^* \subset \mathcal V: \mathcal X^* =\arg \min_{\mathcal X \subset \mathcal V} Ncut(\mathcal X)
+				\]
+			Reformulate the problem
+				\[
+				\text{\textbf{Indicator function}}: \qquad z: \{1,\ldots N\} \mapsto \{-1,1\},\ z_i := z(i) = \left\{\begin{array}{ll}
+								1&\text{if $i \in \mathcal X$}\\    
+								-1&\text{if $i \notin \mathcal X$}
+								\end{array}\right.
+				\]
+
+		\begin{lemma}[Ncut and Rayleigh quotient]
+		 With $z \in \{-1,1\}^N$ (indicator function) there holds
+		 \[
+		  Ncut(\mathcal X) = \frac{y^T \mbf A y}{y^T \mbf D y} , \qquad y= (1+z)-\beta(1-z), \quad \beta = \frac{\sum_{z_i >0 } d_i}{\sum_{z_i <0} d_i}
+		 \]
+		\end{lemma}
+	\subsection{Inverse Iteration}
+		If $\mbf A \in \K^{n,n}$ regular:
+		\[
+			\text{Smallest (in modulus) EV of }\mbf A = \frac{1}{\left( \text{Largest (in modulus) EV of }\mbf A^{-1}\right)}
+		\]
+	\subsection{Preconditioned Inverse Iteration}
+		Given $\mbf A \in \K^{n,n}$ find \emph{smallest} Eigenvalue of regular $\mbf A$. Instead of solving $\mbf A w =z^{(k-1)}$ compute $w = \mbf B^{-1}z^{(k-1)}$ with ''inexpensive s.p.d. \emph{approximate inverse} $\mbf B^{-1} \approx \mbf A^{-1}$ ($\mbf B$: preconditioner).
+
+		\begin{description}
+			\item[Initial Guess] $z^{(0)}$
+			\item[Next Iterate]
+				\begin{align*}
+					w &= z^{(k-1)} - \mbf B^{-1}(\mbf A z^{(k-1)}) - p_\mbf{A} (z^{(k-1)}) z^{(k-1)}\\
+					z^{k} &= \frac{w}{\norm{w}_2}
+				\end{align*}
+		\end{description}
+
+		\begin{itemize}
+			\item Linear convergence
+			\item fast convergence if spectral condition number $\mathcal K(\mbf B^{-1} \mbf A)$ small.
+		\end{itemize}
+	\subsection{Subspace Iterations}
+		\paragraph{Task} Compute $m$, $m \ll n$ of the largest/smallest eigenvalues of $\mbf A = \mbf A^H$ and associated eigenvectors.\\
+
+		Use orthogonality of the Eigenvectors.

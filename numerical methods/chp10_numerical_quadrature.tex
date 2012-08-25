@@ -1,0 +1,119 @@
+\part{Numerical Quadrature}
+
+Approximate evaluation of $\int_\Omega f(x) dx$, integration domain $\Omega \subset \R^d$. Continous function $f:\Omega \subset \R^d \mapsto \R$ only available as \verb|function y=f(x)| (point evaluation).
+\section{Quadrature Formulas}
+	$n$-point \emph{quadrature formula} on 
+	\begin{align*}
+		[a,b]: \quad &\int_a^b f(t) dt \approx Q_n(f) = \sum_{j=1}^n w_j^n f(\xi_j^n)\\
+		w_j^n:\quad &\text{Quadrature weights }\in \R \\
+		\xi_j^n:\quad&\text{Quadrature nodes } \in [a,b]
+	\end{align*}
+	\begin{description}
+	 \item[Given] Quadrature formula $(\hat \xi_j,\hat w_j)_{j=1}^n$ on \emph{reference interval} $[-1,1]$
+	 \item[Idea] Transformation formula for integrals
+		\[
+		 \int_a^b f(t) dt = \frac{1}{2}(b-a)\int_{-1}^1\hat f(\tau) d \tau = \frac{1}{2}(b-a)\int_{-1}^1\hat f\left(\frac{1}{2}(1-\tau)a+\frac{1}{2}(\tau+1)b\right) d\tau
+		\]
+
+	\end{description}
+
+\section{Polynomial Quadrature Formulas}
+	\paragraph{Idea} replace integrand $f$  with $p_{n-1} \in \mathcal P_{n-1}$ = polynomial interpolant of $f$ for given interpolation nodes $\{t_0,\ldots,t_{n-1}\} \subset [a,b]$.
+	 \[
+	  \int_a^b f(t) dt \approx Q_n(f) := \int_a^b p_{n-1}(t) dt
+	 \]
+
+	\paragraph{Newton Cotes Formulas}
+		\begin{description}
+			\item[$n=1$: Trapezoidal rule] (order 2)
+			\[
+			\int_a^b f(t) dt \approx \frac{b-a}{2}(f(a)+f(b))
+			\]
+			\item[$n=2$: Simpson rule] (order 4)
+			\[
+			\int_a^b f(t) dt \approx \frac{b-a}{6} \left( f(a)+4f\left( \frac{a+b}{2}\right)+f(b)\right)
+			\]
+			\item[$n\geq 8$: Quadrature formulas with \emph{negative} weights]
+			\begin{align*}
+			 \int_a^b f(t) dt \approx \frac{b-a}{28350}
+% 				\left( 
+				\Biggl(
+					&989 f(a)+5888f\left(\frac{b-a}{8}\right) -
+					928 f\left(\frac{b-a}{4}\right) + 
+					10496f\left(3\frac{b-a}{8}\right)-\\
+					&\ 4540 f\left(\frac{b-a}{2}\right)+
+					10496f\left(5\frac{b-a}{8}\right)
+					-928 f\left(3\frac{b-a}{4}\right)+
+					5888f\left(7\frac{b-a}{8}\right)+
+					989f\left(b\right)
+				\Biggr)
+			\end{align*}
+			\paragraph{Warning:} \emph{Negative weights compromise numerical stability}.
+		\end{description}
+	\begin{fmerke}[Quadrature Error]
+	 Quadrature error estimates directly from $L^\infty$-interpolation error for Lagrangian interpolation with polynomial degree $n-1$
+	 \[
+	  f \in C^n([a,b]) \ \Rightarrow  \ \left| \int_a^b f(t) dt - Q_n (f) \right| \leq \frac{1}{n!}(b-a)^{n+1} \norm{f^{(n)}}_{L^\infty([a,b])}
+	 \]
+
+	\end{fmerke}
+
+\section{Composite Quadrature}
+	With $a = x_0 < x_1 < \ldots < x_{m-1} < x_m =b$
+	\[
+	 \int_a^b f(t) dt = \sum_{j=1}^m \int_{x_{j-1}}^{x_j} f(t) dt
+	\]
+	\begin{itemize}
+	 \item Partition integration domain $[a,b]$ by \emph{mesh}
+	 \item Apply the quadrature formulas from above on the sub-intervals
+	\end{itemize}
+	
+	\begin{theorem}[Convergence of composite quadrature formulas]
+	 For a composite quadrature formula $Q$ based on a local quadrature formula of order $p\in \N$ holds:
+	 \[
+	  \exists C >0:\ \left| \int_I f(t) dt - Q(f)\right| \leq Ch^p \norm{f^{(p)}}_{L^\infty(I)} \qquad h: \max \text{ Mesh width}
+	 \]
+	\end{theorem}
+	
+	\begin{lemma}[Bound for order of quadrature formula]
+	 There is no $n$-point quadrature of order $2n+1$
+	\end{lemma}
+
+\section{Gauss Quadrature}
+	Necessary \& Sufficient conditions of order 4
+	\begin{align*}
+	 Q_n(p) = \int_a^b p(t) dt\ \forall p \in \mathcal P_3 \quad \Leftrightarrow \quad Q_n(t^q) = \frac{1}{q+1}(b^{q+1} - a^{q+1}),\qquad q=0,1,2,3
+	\end{align*}
+	This gives us $4$ equations:
+	\begin{align*}
+			\int_{-1}^1 1 dt &= 2 = 1w_1 + 1w_2\\
+			\int_{-1}^1 t dt &= 0 = \xi_1w_1+\xi_2w_2\\
+			\int_{-1}^1 t^2 dt &= \frac{2}{3} = \xi_1^2w_1 + \xi_2^2 w_2\\
+			\int_{-1}^1 t^3 dt &= 0 = x_1^3w_1 + \xi_2^3 w_2\\
+		\\	
+		\Longrightarrow \quad	w_1 &= 1\\
+				w_2 &= 1\\
+				\xi_1 &= \frac{1}{3}\\
+				\xi_2 &= \frac{-1}{3}
+	\end{align*}
+	
+	\begin{theorem}[Existence of $n$-point quadrature formulas of order $2n$]
+		Let $\{\overline P_n\}_{n \in \N_0}$ be a family of non-zero polynomials that satisfies
+		\begin{itemize}
+		 \item $\overline P_n \in \mathcal P_n$
+		 \item $\int_{-1}^1 q(t) \overline P_n (t) dt = 0 $ for all $q\in \mathcal P_{n-1}$
+		 \item The set $\{ \xi_j^n\}_{j=1}^m w_j^n f(\xi_j^n)$ of real zeros of $\overline \P_n$ is contained in $[-1,1]$
+		\end{itemize}
+		\[
+		 \text{then }\quad Q_n(f) = \sum_{j=1}^m w_j^n f(\xi_j^n)
+		\]
+	\end{theorem}
+	
+	\begin{lemma}[Zeros of Legendre Polynomials]
+	 $P_n$ has $n$ \emph{distinct} zeros in $]-1,1[$.
+	\end{lemma}
+
+
+
+
+

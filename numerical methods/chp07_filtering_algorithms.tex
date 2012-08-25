@@ -1,0 +1,81 @@
+\clearpage
+\part{Filtering Algorithms}
+\section{Discrete Convolutions}
+	\begin{definition}[Discrete Convolution]
+	 Given $x = (x_0,\ldots, x_{n-1})^T \in \K^n$, $h = (h_0, \ldots, h_{n-1})^T \in \K^n$ their \emph{discrete convolution} is the vector $y \in \K^{2n-1}$ with components
+	 \[
+	  y_k = \sum_{j=0}^{n-1} h_{k-j}x_j,\qquad k = 0, \ldots, 2n-2
+	 \]
+	\end{definition}
+	
+	\begin{definition}[Discrete Periodic Convolution]
+	 The \emph{discrete periodic convolution} of two $n$-periodic sequences $(x_k)_{k\in \Z}$, $(y_k)_{k\in \Z}$ yields the $n$-periodic sequence
+	 \[
+	  (z_k) = (x_k) \ast_n (y_k) 
+	 \]
+	 \[
+	  z_k = \sum_{j=0}^{n-1} x_{k-j}y_j = \sum_{j=0}^{n-1} \qquad k \in \Z
+	 \]
+	\end{definition}
+	
+	\begin{definition}[Circulant Matrix]
+	A matrix $\mbf C = (c_{ij})_{i,j=1}^n \in \K^{n,n}$ is \emph{circulant}
+		\[
+		 :\Leftrightarrow \quad \exists (u_k)_{k\in \Z} \ n-\text{periodic sequence: }\ c_{ij} = u_{i-j},\ 1 \leq i,j \leq n
+		\]
+
+	\end{definition}
+
+\section{Discrete Fourier Transform (DFT)}
+	\paragraph{Fourier-Matrix}
+		\[
+		 F_n = \begin{pmatrix}
+		        w_n^0 & w_n^0 & \ldots & w_n^0\\
+		        w_n^0 & w_n^1 & \ldots & w_n^{n-1}\\
+		        w_n^0 & w_n^2 & \ldots & w_n^{2n-2}\\
+		        \vdots &\vdots&		   & \vdots\\
+		        w_n^0 & w_n^{n-1} & \ldots & w_n^{(n-1)^2}
+		       \end{pmatrix}
+		\]
+		$w_n^k = e^{2\pi\ i\ k/n}$
+	\begin{lemma}[Properties of Fourier Matrix]
+	 The scaled Fourier Matrix $\frac{1}{\sqrt{n}}\mbf F_n$ is unitary:
+	 \[
+	  \mbf F_n^{-1} = \frac{1}{n}\mbf F_n^H = \frac{1}{n} \overline{\mbf F}_n
+	 \]
+	\end{lemma}
+	
+	\begin{lemma}[Diagonalization of Circulant Matrices]
+	 For any circulant matrix $\mbf C \in \K^{n,n}$, $c_{ij} = u_{i-j},\ (u_k)_{k \in \Z}$ $n$-periodic sequence, holds true
+	 \begin{align*}
+	  \mbf C \overline{\mbf F}_n &= \overline{\mbf F}_n diag(d_1, \ldots,d_n)\\
+	  d &= \mbf F_n (u_0, \ldots, u_{n-1})^T
+	 \end{align*}
+	\end{lemma}
+
+	Conclusion:
+		\[
+		 \mbf C = \mbf F_n^{-1} diag(d_1, \ldots, d_n) \mbf F_n
+		\]
+
+	\begin{definition}[Discrete Fourier Transform (DFT)]
+	 The linear map $\mathcal F_n: \C^n \mapsto \C^n$, $\mathcal F_n(y) := \mbf F_n y$, $y\in C^n$ is called \emph{discrete Fourier transform}
+	\end{definition}
+	
+	\begin{lstlisting}
+	 %% DFT
+	 c = fft(y)
+	 %% Inverse DFT
+	 y = ifft(c);
+	\end{lstlisting}
+
+	\subsection{Two-Dimensional DFT}
+		\begin{lstlisting}
+		 fft2(Y) = fft(fft(Y).').'
+		\end{lstlisting}
+		
+\section{Fast Fourier Transform (FFT)}
+	Complexity of FFT algorithm: $n=2^L$
+	\[
+	 O(L2^L) = O(n \log_2 n)
+	\]

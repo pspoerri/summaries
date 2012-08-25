@@ -1,0 +1,194 @@
+\documentclass[a4paper]{scrartcl}
+
+\usepackage{amsmath, amsthm, amssymb, amsfonts} 
+\usepackage{german}
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}  
+%\usepackage[rflt]{floatflt}  
+\usepackage{graphics}
+\usepackage{epsfig} 
+%\usepackage{qtree} 
+\usepackage{textcomp}
+
+\usepackage{listings} 
+% \lstset{numbers=left, numberstyle=\tiny, numbersep=5pt} 
+\lstset{
+	basicstyle=\ttfamily\scriptsize\mdseries,
+	keywordstyle=\bfseries\color{blue},
+	identifierstyle=,
+% 	stringstyle=\itshape\color{red},
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=10,
+	breaklines=true,
+	frame=none,
+	showstringspaces=false,
+	tabsize=4,
+% 	backgroundcolor=\color{gray},
+% 	morecomment=[s][\color{green}]{/+}{+/},
+	commentstyle=\color{gray},	
+	captionpos=b,
+	float=htbp,
+}
+
+
+\usepackage{tbabstract}
+\newcommand{\K}     {\mathbb{K}}
+
+\author{Pascal Spörri}
+\title{Matlab Commands\\Summary HS 2009}
+\date{\today}
+
+\begin{document}
+\maketitle
+Beware: This document is probably not CC-able, since I copied from a variety of sources.
+\section{Matrix Operations}
+	\subsection{Triu} 
+		U = triu(X) returns the upper triangular part of $X$.
+		U = triu(X,k) returns the element on and above the kth 
+		diagonal of X. k = 0 is the main diagonal, k > 0 is above 
+		the main diagonal, and k < 0 is below the main diagonal.
+	\subsection{Tril}
+		U = tril(X) Does the same like triu, but instead of returning the upper triangular part of $X$ it returns the lower part.
+	\subsection{Meshgrid} 
+		The meshgrid command is used to generate two arrays 
+		containing the $x$- and $y$-coordinates at each position in 
+		a rectilinear grid. For example [X,Y] = meshgrid(-5:1:5) 
+		returns two $11 \times 11$ matrices - the $X$ matrix defines the 
+		$x$-coordinates and the $Y$ matrix the $y$-coordinates at each 
+		position in an $11 \times 11$ grid.
+		
+		[X,Y] = meshgrid(1:n,1:m)
+		\begin{align*}
+			X &= \left. \begin{pmatrix}
+				1 & 2 & \ldots & n\\
+				1 & 2 & \ldots & n\\
+				\vdots & & \ddots & \vdots \\
+				1 & & 2 & \ldots & n 
+				\end{pmatrix} \right\} m-\text{ mal}\\
+			Y &= \underbrace{\begin{pmatrix}
+						1 & 1 & \ldots & 1\\
+						2 & 2 & \ldots & 2\\
+						\vdots & &\ddots &\vdots\\
+						m & m & \ldots & m 
+					\end{pmatrix}}_{n-\text{ mal}}
+		\end{align*}
+	\subsection{Kron} 
+		Kron(A,B) will create a special Matrix, that has all possible products between the elements of A and B.
+		\begin{align*}
+		y = kron\left( \begin{pmatrix}
+						1 & 2\\
+						3 & 4
+						\end{pmatrix}, \begin{pmatrix}
+										5 & 6 \\
+										7 & 8 
+										\end{pmatrix} \right) =
+			M \ast x = \begin{pmatrix} 5 &   6 &  10 &  12\\
+										7 &   8 &  14 &  16\\
+										15 &  18 &  20 &  24\\
+										21 &  24 &  28 &  32
+						\end{pmatrix} \ast x
+		\end{align*}
+		\paragraph{Complexity} $O(n^4)$
+\section{Sparse Matrices (this section is not CC-ed since i copied from octave and matlab doc )}
+			When solving linear equations involving sparse matrices Octave
+			determines the means to solve the equation based on the type of the
+			matrix as discussed in Sparse Linear Algebra.  Octave probes the
+			matrix type when the div ($/$) or ldiv ($\backslash$) operator is first used with
+			the matrix and then caches the type.  However the ``matrix\_type``
+			function can be used to determine the type of the sparse matrix prior
+			to use of the div or ldiv operators.
+
+	\subsection{sparse(A)}
+			\begin{lstlisting}[language=matlab]
+				S = sparse(I, J, SV)
+				S = sparse(I, J, S, M, N, 'unique')
+				S = sparse(M, N)
+			\end{lstlisting}
+			Create a sparse matrix from the full matrix or row, column, value
+			triplets.  If A is a full matrix, convert it to a sparse matrix
+			representation, removing all zero values in the process.
+
+			Given the integer index vectors I and J, a 1-by-`nnz' vector of
+			real of complex values SV, overall dimensions M and N of the
+			sparse matrix.  If M or N are not specified their
+			values are derived from the maximum index in the vectors I and J
+			as given by $M = max (I)$, $N = max (J)$
+
+			Iif multiple values are specified with the same I, J
+			indices, the corresponding values in S will be added.
+
+			The following are all equivalent:
+			\begin{lstlisting}[language=matlab]
+				s = sparse (i, j, s, m, n)
+				s = sparse (i, j, s, m, n, 'summation')
+				s = sparse (i, j, s, m, n, 'sum')
+			\end{lstlisting}
+			Given the option ''unique``. if more than two values are specified
+			for the same I, J indices, the last specified value will be used.
+			\begin{lstlisting}[language=matlab]
+				sparse(M, N)
+			\end{lstlisting}
+			is equivalent to
+			\begin{lstlisting}[language=matlab]
+				sparse ([], [], [], M, N, 0)\]
+			\end{lstlisting}
+
+			If any of SV, I or J are scalars, they are expanded to have a
+			common size.
+		\paragraph{Example} S = sparse(1:n,1:n,1) generates a sparse representation of the n-by-n identity matrix. The same S results from S = sparse(eye(n,n)), but this would also temporarily generate a full n-by-n matrix with most of its elements equal to zero.
+	\subsection{spdiags (A)}
+			\begin{lstlisting}[language=matlab]
+				[B, C] = spdiags (A)
+				B = spdiags (A, C)
+				B = spdiags (V, C, A)
+				B = spdiags (V, C, M, N)
+			\end{lstlisting}
+			A generalization of the function `diag'.  Called with a single
+			input argument, the non-zero diagonals C of A are extracted.  With
+			two arguments the diagonals to extract are given by the vector C.
+
+			The other two forms of `spdiags' modify the input matrix by
+			replacing the diagonals.  They use the columns of V to replace the
+			columns represented by the vector C.  If the sparse matrix A is
+			defined then the diagonals of this matrix are replaced.  Otherwise
+			a matrix of M by N is created with the diagonals given by V.
+
+			Negative values of C represent diagonals below the main diagonal,
+     		and positive values of C diagonals above the main diagonal.
+
+     		For example
+			\begin{lstlisting}[language=matlab]
+				spdiags(reshape (1:12, 4, 3), [-1 0 1], 5, 4)
+			\end{lstlisting}
+			\begin{align*}
+	\Longrightarrow	\qquad	\begin{pmatrix}
+								5& 10&  0&  0\\
+								1&  6& 11&  0\\
+								0&  2&  7& 12\\
+								0&  0&  3&  8\\
+								0&  0&  0&  4
+							\end{pmatrix}
+			\end{align*}
+	\subsection{speye(M)}
+			\begin{lstlisting}[language=matlab]
+				Y = speye (M)
+				Y = speye (M, N)
+				Y = speye (SZ)
+			\end{lstlisting}
+
+			Returns a sparse identity matrix.  This is significantly more
+			efficient than ''sparse (eye (M))`` as the full matrix is not
+			constructed.
+
+			Called with a single argument a square matrix of size M by M is
+			created.  Otherwise a matrix of M by N is created.  If called with
+			a single vector argument, this argument is taken to be the size of
+			the matrix to create.
+
+	\subsection{nnz (A)}
+			Returns the number of non zero elements in A.
+	\subsection{nonzeros (S)}
+			Returns a vector of the non-zero values of the sparse matrix S.
+
+\end{document}

@@ -1,0 +1,102 @@
+\part{Direct Methods for Linear Systems of Equations}
+	\begin{description}
+	 \item[Given] matrix $A \in K^{n,n}$, vector $b \in K^n$
+	 \item[Sought] solution vector $x\in \K^n$
+	\end{description}
+	
+	\section{Gaussian Elimination}
+		Asymptotic complexity: $O(n^3)$. (Backsubstitution: $O(n^2)$)
+		
+		\begin{align*}
+		 \mathbf A = \begin{pmatrix}
+		              \alpha & \qquad	& \mathbf c^T & \qquad 	\\
+		              & \\
+		              d 	 & 			& \mathbf C \\
+							 & \qquad
+		             \end{pmatrix}
+		             \rightarrow
+		 \mathbf A' = \begin{pmatrix}
+		              \alpha & \quad	& \mathbf c^T & \quad 	\\
+		              & \\
+		              0 	 & 			& \mathbf C' = \mathbf C - \frac{\mathbf{dc}^T}{\alpha}\\
+							 & \quad
+		             \end{pmatrix}
+		\end{align*}
+		\subsection{Stability}
+			\begin{lemma}[Equivalence of gaussian elimination and LU-factorization]
+			  The following algorithms for solving the LSE $\mathbf Ax = b$ are \emph{numerically equivalent}
+			  \begin{enumerate}
+			   \item Gauss elimination without pivoting
+			   \item LU-factorization followed by forward and backward substitution
+			  \end{enumerate}
+			\end{lemma}
+
+	\section{Sparse Matrices}
+		Initialization:
+		\begin{lstlisting}[language=matlab]
+			A = sparse(m,n);
+			A = spalloc(m,n,nnz)
+			A = sparse(i,j,s,m,n);
+			A = spdiags(B,d,m,n);
+			A = speye(n);
+			A = spones(S);
+		\end{lstlisting}
+
+	
+
+		\begin{theorem}[LU-Decomposition Fill-in on sparse matrices]
+			If $\mathbf A \in \K^{n.n}$ is \emph{regular} with LU-decomposition $\mathbf A = \mathbf{LU}$, then the fill-in is confined to the \emph{envelope} of $\mathbf A$
+		\end{theorem}
+		\begin{notice}[Solving Sparse Band Matrices]
+			Alter the LSE with Gauss and try to remove the fill-in (see: set 3, problem 3)
+		\end{notice}
+	\section{QR-Factorization / QR-Decomposition}
+		A QR decomposition (also called a QR factorization) of a matrix is a decomposition of the matrix into an orthogonal and a right triangular matrix.
+		\paragraph{QR-Decomposition with Householder reflections} advantageous for fully populated target columns (dense matrices).
+		\paragraph{QR-Decomposition with Givens Rotations} more efficient, if target column sparsely populated
+
+		\begin{lemma}[Uniqueness of QR-factorization]
+			The ``econimcal QR-factorization of $\mathbf A \in \K^{m,n}$, $m \geq n$ with $rank(\mathbf A)=n$ is unique, if we demand $r_{ii} > 0$
+		\end{lemma}
+
+		\begin{notice}[Stability of the QR-Decomposiztion]
+			\begin{itemize}
+				\item Computing the generalized QR-decomposition $\mathbf A = \mathbf{QR}$ by means of Householder reflections or Givens rotations is (numerically) stable for any $\mathbf A \in \C^{m,n}$
+				\item For \emph{any} regular systems matrix ans LSE can be solved by means of
+				\begin{center}
+					QR-Decomposition $\mathbf +$ orthogonal transformation $\mathbf +$ backward substitution
+				\end{center}
+
+			\end{itemize}
+		\end{notice}
+
+\section{Modification Techniques}
+		\begin{lemma}[Sherman Morrison Woodbury formula]
+			For regular $\mathbf A \in \K^{n,n}$, and $\mathbf U$, $\mathbf V \in \K^{n,k}$, $l \leq n$, holds
+			\begin{align*}
+				(\mathbf A+\mathbf{UV}^H)^{-1} = \mathbf A^{-1} - \mathbf A^{-1}\mathbf U(\mathbf I + \mathbf V^H \mathbf A^{-1}\mathbf U)^{-1}\mathbf V^H \mathbf A^{-1}
+			\end{align*}
+			\emph{If} $\mathbf I + \mathbf V^H \mathbf A^{-1}\mathbf U$ regular.
+		\end{lemma}
+	\subsection{Rank-1 modifications}
+		\paragraph{with LU-Decomposition}
+			Let $\tilde{\mathbf A } :=  \mathbf A + uv^H$, $u,v \in \K^n$. $uv^H$ is a general \emph{rank 1 matrix}.
+			For solving $\tilde{\mathbf A } x = b$ when $\mathbf{A = LU}$ is already known. Apply the Sherman Morrison Woodbury formula:
+			\begin{align*}
+				x = \left( \mathbf I - \frac{\mathbf A^{-1} uv^H}{1+v^H \mathbf A^{-1}u}\right)\mathbf A^{-1}b
+			\end{align*}
+		\paragraph{with QR-Decomposition}
+			% i'm simply to lazy to type this Givens Rotation crazyness and it probably won't help anything
+			Matlab Command
+			\begin{lstlisting}[language=matlab]
+				[Q1,R1] = qrupdate(Q,R,u,v)
+			\end{lstlisting}
+		\paragraph{with Cholesky factorization}
+			Matlab Command
+			\begin{lstlisting}[language=matlab]
+				R = cholupdate(R,v)
+			\end{lstlisting}
+% 	\subsection{Adding a column}
+		
+% 	\subsection{Adding a row}
+

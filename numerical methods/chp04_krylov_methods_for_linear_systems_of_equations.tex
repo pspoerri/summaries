@@ -1,0 +1,122 @@
+\part{Krylov Methods for Linear Systems of Equations}
+A class of \emph{iterative methods} for approximate solutions of large linear systems of equations.
+
+\section{Descent Methods}
+	\begin{definition}[Energy norm]
+	 A s.p.d matrix $\mathbf A \in \R^{n,n}$ induces a \emph{energy norm}
+	 \[
+	  \norm{x}_{\mathbf A} := \left(x^T \mathbf A x\right)^{1/2} \quad x\in\R^n
+	 \]
+	\end{definition}
+	
+	\begin{lemma}[S.p.d LSE and quadratic minimization problem]
+	 An LSE with $\mathbf A \in \R^{n,n}$ s.p.d is equivalent to a minimization problem:
+	 \[
+	  \mbf A x = b \quad \Longleftrightarrow \quad x = \arg \min_{y\in \R^n} J(y), \quad J(y) = \frac{1}{2}y^T \mbf A y - b^T y
+	 \]
+	\end{lemma}
+	\subsection{Abstract steepest descent}
+		\begin{description}
+		 \item[Given] continuously differentiable $F: D\subset \R^n \mapsto \R$
+		 \item[Find] minimizer $x^* \in D: x^* = \arg \min_{x\in D} F(x)$
+		\end{description}
+		
+		\begin{algorithmic}
+			%\STATE \COMMENT{Initial guess}
+			\STATE $x^{(0)} \in D$
+			\STATE $k = 0$
+			\WHILE{$\norm{x^{(k)}-x^{(k-1)}} \leq \tau \norm{x^{(k)}}$}
+				\STATE $d_k = -\mbf{grad} F(x^{(k)})$
+				\STATE $t^* = \arg \min_{t\in \R} F(x^{(k)}+t d_k)$
+				\STATE $x^{(k+1)} = x^{(k)} + t^* d_k$
+				\STATE $k = k+1$
+			\ENDWHILE
+		\end{algorithmic}
+		
+	\subsection{Gradient Method for s.p.d linear systems of equations}
+		Adapt the steepest descent algorithm for the quadratic minimization problem.
+		\[
+		 F(x) = J(x) = \frac{1}{2}x^T \mbf A x - b^T x \quad \Rightarrow  \quad \mbf{grad} J(x) = \mbf Ax -b
+		\]
+	
+		\begin{algorithmic}
+		 \STATE $x^{(0)} \in \R^n$
+		 \STATE $k = 0$
+		 \STATE $r_0 =  b - \mbf A x^{(0)}$
+		 \WHILE{$\norm{x^{(k)}-x^{(k-1)}}\leq \tau \norm{x^{(k)}}$}
+			\STATE $t^* = \frac{r_k^Tr_k}{r_k^T \mbf A r_k}$
+			\STATE $x^{(k+1)} = x^{(k)} + t^* r_k$
+			\STATE $r_{k+1} = r_k - t^* \mbf A r_k$
+			\STATE $k = k+1$
+		 \ENDWHILE
+		\end{algorithmic}
+	\subsection{Convergence}
+		The steepest descent and the gradient method posess at least linear convergence
+		\begin{theorem}[Convergence of gradient/steepest descent method]
+		 The iterates of the gradient method satisfy
+		 \[
+		  \norm{x^{(k+1)}-x^*}_A \leq L \norm{x^{(k)}-x^*}_A \qquad L = \frac{cond_2(\mbf A)-1}{cond_2(\mbf A)+1}
+		 \]
+		 that is, the iteration converges at least linearly
+		\end{theorem}
+\section{Conjugate gradient method}
+	Again, we consider a linear system of equations $\mbf A x = b$ with s.p.d system matrix $\mbf A \in \R^{n,n}$  and given $b \in \R^n$ 
+	\begin{description}
+	 \item[Idea] Replace linear search with \emph{subspace correction}
+	 \item[Given] Initial gues $x^{(0)}$ and \emph{nested} subspaces $U_1 \subset U_2 \subset \ldots \subset U_n = \R^n$, $\dim U_k = k$
+	 \[
+	  U_{k+1} = Span\{U_k,r_k\}
+	 \]
+	\end{description}
+
+	\subsection{Krylov Spaces}
+		\begin{definition}[Krylov Space]
+		 For $\mbf A \in \R^{n,n}$, $z \in \R^n$, $z \neq 0$, the $l$-th \emph{Krylov space} is defined as
+		 \[
+		  \mathcal K(\mbf A,z) = Span \{z, \mbf Az, \ldots, A^{l-1}z\}
+		 \]
+		\end{definition}
+		
+		\begin{lemma}
+		 The subspaces $U_k \subset \R^n$, $k \geq 1$ defined above satisfy
+		 \[
+		  U_k = Span \{r_0, \mbf Ar_0, \ldots, A^{l-1}r_0\} = \mathcal K(\mbf A,z) 
+		 \]
+		 where $r_0 = b - \mbf A x^{(0)}$ is the initial residual.
+		\end{lemma}
+	\subsection{Implementation of CG}
+		*Left out*
+		\begin{lstlisting}[language=matlab]
+		 x = pcg(A,b,tol,maxit,[],[],x0);
+		 x = pcg(Afun,b,tol,maxit,[],[],x0);
+		\end{lstlisting}
+		
+		CG is used for lager $n$ as iterative solver $x^{(k)}$ for some $k\ll n$ is expected to provide good approximation for $x^*$
+	\section{Preconditioning}
+		CG has a slow convergence rate in case $\mathcal K(\mbf A) \gg 1$
+		
+		\paragraph{Idea} Apply CG Method to transformed linear systems
+		\begin{align*}
+		 \tilde{\mbf A} \tilde x &= \tilde b\\ 
+		 \tilde{\mbf A } &=\mbf B^{-1/2} \mbf A \mbf B^{-1/2}\\ 
+		 \tilde{x} &= \mbf B^{1/2}x \\
+		 \tilde b &= \mbf B^{-1/2} b
+		\end{align*}
+		where as $\mbf B^{1/2} = \mbf Q^T\mbf D^{1/2} \mbf Q$ and $\mbf Q =\mbf Q^T$.
+		\begin{notice}[Preconditioner]
+		 A s.p.d matrix $\mbf B \in \R^{n,n}$ is called a \emph{preconditioner} for the s.p.d matrix $\mbf A \in \R^{n,n}$ if
+		 \begin{enumerate}
+		  \item $\mathcal K(\mbf A^{-1/2} \mbf A \mbf B ^{-1/2})$ is ''small``
+		  \item the evaluation of $\mbf B^{-1} x$ is about as expensive as the matrix vector multiplication $\mathbf A x$, $x \in \R^n$
+		 \end{enumerate}
+
+		\end{notice}
+\section{Survey of Krylov Subspace Methods}
+	\subsection{Minimal residual function}
+		Replace inner Euclidean product in CG with $\mbf A$-inner product.
+		\[
+		 \norm{x^{(l)}-x}_A \qquad \text{replaced with} \qquad \norm{\mbf A(x^{(l)}-x)}_2
+		\]
+		\verb|minres| $\Longrightarrow$ Iterative solver for \emph{symmetric} Matrices $\mbf A$\\
+
+		\verb|gmres| $\Longrightarrow$ Iterative solver for \emph{general} Matrices $\mbf A$

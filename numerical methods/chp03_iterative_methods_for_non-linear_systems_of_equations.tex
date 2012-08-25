@@ -1,0 +1,255 @@
+\part{Iterative Methods for Non-Linear Systems of Equations}
+	
+\section{Iterative Methods}
+	An \emph{iterative method} for (approximately solving) the non-linear equation $F(\vec x) = 0$ is an algorithm generating a sequence $\left(x^{(k)}\right)_{k\in \N}$ of \emph{approximate solutions}.
+	
+	\begin{definition}[Convergence of iterative methods]
+	 An iterative methods \emph{converges} 
+	 \begin{align*}
+	  x^{(k)} \ \rightarrow x^* \ \text{ and } F(x^*) = 0
+	 \end{align*}
+	\end{definition}
+	
+	\begin{definition}[Consistency of iterative methods]
+	 An iterative method is \emph{consistent} with $F(x) = 0$ 
+	 \begin{align*}
+	  :\Longleftrightarrow \qquad \Phi_F(x^*,x^*, \ldots, x^*)= x^* \ \Leftrightarrow \ F(x^*)=0
+	 \end{align*}
+	\end{definition}
+	\subsection{Speed of convergence}
+	\begin{definition}[Linear convergence]
+	 A sequence $x^{(k)},\ k = 0,1,2,\ldots$ in $\R^n$ \emph{converges linearly} to $x^*\in \R^n$ if
+	 \begin{align*}
+	  \exists L < 1 \quad \norm{x^{(k+1)}-x^*} \leq C \norm{x^{(k)}-x^*} \quad \forall k \in \N_0
+	 \end{align*}
+	 $\Longrightarrow$ straight line in \emph{lin-log plot}.
+	\end{definition}
+	
+	\begin{definition}[Order of convergence]
+	 A \emph{convergent} sequence $x^{(k)}$, $k= 0, 1, 2, \ldots$ in $\R^n$ converges with \emph{order $\mathbf p$} to $x^*\in \R^n$ if
+	 \begin{align*}
+	  \exists C > 0: \quad \norm{x^{(k+1)}-x^*} \leq C \norm{x^{(k)}-x^*}^p \qquad \forall k \in \N_0
+	 \end{align*}
+	 with $C <1$. (For $p = 1$: linear convergence)
+	\end{definition}
+
+	\begin{notice}[Guessing the order of convergence]
+	 Abbreviate $\varepsilon_k := \norm{x^{(k)}- x^*}$ 
+	 \begin{align*}
+	  \varepsilon_{k+1} \approx C \varepsilon_k^p \quad \Rightarrow \ \log \varepsilon_{k+1} \approx \log C + p \log \varepsilon_k \quad \rightarrow 
+	  \quad p \approx \frac{\log \varepsilon_{k+1}-\log \varepsilon_k}{\log \varepsilon_k -\log \varepsilon_{k-1}}
+	 \end{align*}
+	\end{notice}
+	
+	\subsection{Termination criteria}
+		Usually the iteration will never arricew at an/the exact solution $x^*$ after finitely many steps. Thus we can only hope to compute an approximate solution by accepting an $x^{(k)}$ as a result.
+		
+		\begin{description}
+		 \item[A priori termination] stop iteration after a fixed number of steps.\\
+			Problem: \emph{Hardly ever possible}
+		 \item[A posteriori termination criteria] use already computed iterates to decide when to stop. Reliable termination: stop iteration 
+			\[ 
+				\norm{x^{(k)} -x^*} \leq \tau \qquad \qquad \tau \equiv  \text{ prescribed \emph{tolerance}} 
+			\]
+			Problem: \emph{\(x^*\) not known}
+		 \item[Stationary iteration] use that the finite numbers are finite: Wait until (convergent) iteration becomes stationary.\\
+			\[
+				wait\ until: x^{(k)} = x^{(k+1)} 
+			\]
+			Problem: \emph{Very inefficent}
+		 \item[Residual based termination] Stop convergent iteration when
+			\[
+				\norm{F\left((x^{(k)}\right)} \leq \tau \qquad \qquad \tau \equiv \text{ prescribed \emph{tolerance}} 
+			\]
+			Problem: \emph{No guaranteed accuracy since} \( \norm{F\left((x^{(k)}\right)} \) small \( \nRightarrow |x^{(k)}-x^*| \) small.
+		\end{description}
+\section{Fixed Point Iterations}
+	$F$ is a non-linear system of equations with $F: D \subset \R^n \mapsto \R^n$\\
+	A \emph{fixed point iteration} is defined by an \emph{iteration function} \( \Phi: U \subset \R^n \mapsto \R^n \) and an initial guess \( x^{(0)} \in U\).
+	\[
+	 %\left(x^{(k)} \right)_{k \in \N_0 }: \ 
+		x^{(k+1)} := \Phi\left(x^{(k)}\right)
+	\]
+	%\subsection{Consistent fixed point iterations}
+		\begin{definition}[Consistency of fixed point iterations]
+		 A fixed point iteration $x^{(k+1)} := \Phi\left(x^{(k)}\right)$ is \emph{consistent} with $F(x)= 0$ if
+		 \[
+		  F(x) = 0 \qquad \text{ and } \qquad x \in U \cap D \quad \Longleftrightarrow \quad \Phi(x) = x
+		 \]
+		\end{definition}
+		If $\Phi$ continous and the fixed point iteratin is (locally) convergent to $x^*$ then $x^*$ ist the fixed point of the iteration function $\Phi$.
+	
+		\begin{definition}[Contractive mapping]
+			\( \Phi: U \subset \R^n \mapsto \R^n\) is \emph{contractive}, if
+			\[
+			 \exists L < 1: \quad \norm{\Phi(x)-\Phi(y)} \leq \norm{x-y} \quad \forall x,y \in U
+			\]
+		\end{definition}
+		
+		\begin{theorem}[Banach's fixed point theorem]
+		 If $D\subset \K^n$ ($\K = \R, \C$) closed and $\Phi: D \mapsto D$ satisfies
+		 \[
+			 \exists L < 1: \quad \norm{\Phi(x)-\Phi(y)} \leq \norm{x-y} \quad \forall x,y \in U
+		 \]
+		 then there is a unique fixed point $x^* \in D$, $\Phi(x^*)=x^*$, which is the limit of the sequence of iterates $x^{(k+1)}:=\Phi\left(x^{(k)}\right)$ for any $x^{(0)} \in D$
+		\end{theorem}
+		
+		\begin{align*}
+		 -1 < \Phi'(x^*) < 1 & \quad \text{convergence}\\
+		 \Phi'(x^*) < -1 & \quad \text{divergence}\\
+		 \Phi'(x^*) > 1 & \quad \text{divergence}
+		\end{align*}
+		
+		\begin{lemma}[Sufficient condition for local linear convergence of fixed point iterations]
+		 If $\Phi: U \subset \R^n \mapsto \R^n$, $\Phi(x^*) = x^*$, $\Phi$ differentiable in $x^*$ and $\norm{D\Phi(x^*)} < 1$, then the fixed point iteration converges locally and at least \emph{linearly}.
+		\end{lemma}
+		
+		If $0 < \norm{D\Phi(x)} < 1$, then the \emph{asymptotic rate} of linear convergence is $L = \norm{D\Phi(x)}$ (where as $L$: lipschitz constant).
+		
+		\begin{lemma}[Higher order local convergence of fixed point iterations]
+		 If $\Phi: U \subset \R \mapsto \R$ is $m+1$ times \emph{continuously differentiable}, $\Phi(x^*) = x^*$ for some $x^*$ in the interrior uf $U$ and $\Phi^{(l)}(x^*) = 0$ for $l=1, \ldots, m$, $m \geq 1$, then the fixed point iteration converges locally to $x^*$ with 
+		 \[order \geq m+1 \]
+		\end{lemma}
+
+\section{Zero Finding}
+	$F: I \subset \R \mapsto \R$ \emph{continous}, $I$ interval. \emph{Sought:} $x^* \in I: F(x^*) = 0$.
+	\subsection{Bisection}
+		Use of ordering of real numbers and itermediate value theorem.
+		\emph{Input:} $a,b \in I$ such that $F(a)F(b) < 0$ (different signs).
+		\begin{lstlisting}[language=matlab]
+		 function x = bisect(F,a,b,tol)
+			fa = F(a);
+			fb = F(b);
+			if (fa*fb > 0)
+				error('f(a) and f(b) have the same sign');
+			end
+			
+			v = 1;
+			if (fa > 0)
+				v = -1;
+			end
+			x = 0.5 * (a+b);
+			while ((b-a > tol) & (a<x) & (x<b))
+				if (v*F(x) >0)
+					b = x;
+				else
+					a = x;
+				end
+				x = 0.5*(a+b)
+			end
+		end
+		\end{lstlisting}
+		\begin{description}
+		 \item[Advantages] foolproof, requires only $F$ evaluations
+		 \item[Drawbacks] Merely linear convergence \( |x^{(k)} - x^* | \leq 2^{-k} |b-a| \)
+		\end{description}
+		\( \Longrightarrow \) \verb|fzero| uses this approach.
+	\subsection{Model Function Methods}
+	Model function Methods is a class of iterative methods for finding zeroes of $F$: 
+	\begin{description}
+	 \item[Idea] Given: approximate zeroes $x^{(k)}, \ x^{(k-1)}, \ , \ldots, x^{(k-m)}$
+		\begin{enumerate}
+		 \item replace $F$ with a \emph{model function} $\tilde F$ (using function values/derivative values in  $x^{(k)}, \ x^{(k-1)}, \ , \ldots, x^{(k-m)}$)
+		 \item $x^{(k+1)}:=$ zero of $\tilde F$ 
+		\end{enumerate}
+	 \item[Distinguish] between one-point methods and multipoint methods.
+	\end{description}
+		\subsubsection{Newton Method}
+			Assume: $F:I \rightarrow \R$ continuously differentiable. Model function := tangent af $F$ in $x^{(k)}$.
+			\[
+			 \tilde F(x):= F\left(x^{(k)}\right) +  F'\left(x^{(k)}\right)\left(x-x^{(k)}\right)
+			\]
+			with $x^{(k+1)} :=$ zero of the tangent.\\
+			
+			We obtain the \emph{Newton Iteration}
+			\[
+			 x^{(k+1)}:= x^{(k)} - \frac{F\left(x^{(k)}\right)}{F'\left(x^{(k)}\right)} \qquad \text{ with } F' \left(x^{(k)}\right) \neq 0
+			\]
+		\subsubsection{Multi Point Methods}
+			Replace $F$ with an \emph{interpolation polynomial} producing interpolatory model function methods.
+			\begin{notice}[Secant Method]
+				\begin{align*}
+				 x^{(k+1)} &= \text{ zero of secant}\\
+				 s(x) &= x^{(k)} - \frac{F(x^{(k)})-F(x^{(k-1)})}{F(x^{(k)})-F(x^{(k-1)})}\cdot (x-x^{(k)})\\
+				 \Longrightarrow \qquad x^{(k+1)}&= x^{(k)}- \frac{F(x^{(k)})\cdot(x^{(k)}-x^{(k-1)})}{F(x^{(k)})-F(x^{(k-1)})}
+				\end{align*}
+				\begin{itemize}
+				 \item Only one function evaluation per step
+				 \item no derivatives required
+				\end{itemize}
+			\end{notice}
+	\subsection{Efficiency}
+		\emph{Efficiency} of an iterative method $\leftrightarrow$ \emph{computational effort} to reach prescribed number of significant digits in result.
+		\begin{notice}[Computational effort/step]
+			\[
+			 W \approx \frac{\# \{\text{evaluations of $F$}\}}{\text{step}} + n \cdot \frac{\# \{\text{evaluations of $F'$}\}}{\text{step}} \ldots
+			\]
+		\end{notice}
+		\begin{definition}[Efficiency]
+			\begin{align*}
+			\text{Efficiency} &= \frac{\text{\# of digits gained}}{\text{total work required}} = \frac{|\log p|}{k(p)\cdot W}\\
+			k(p) &= \text{ number of steps to achieve relative reduction of error }\\
+			|\log p|  &= \text{ number of significant digits of $x^{(k)}$}
+			\end{align*}
+		\end{definition}
+\section{Newton's Method}
+	\subsection{The Newton Iteration}
+		\begin{definition}[Newton Iteration]
+			\[
+			x^{(k+1)} :=  x^{(k)}-DF\left( x^{(k)}\right)^{-1} F\left( x^{(k)}\right)
+			\]
+		\end{definition}
+
+		\begin{lstlisting}[language=matlab]
+			function x = newton(x,F,DF,tol)
+				for i = 1:MAXIT
+					s = DF(x) \ F(x);
+					x = x - s;
+					if (norm(s) < tol*norm(x))
+						return;
+					end
+				end
+			end
+		\end{lstlisting}
+
+		If $DF(x)$ is not available use
+			\[
+			 \frac{\delta F_i}{\delta x_j}(x) \approx \frac{F_i(x + h \vec e_j)-F_i(x)}{h}
+			\]
+		to approximate $DF(x)$. Warning: Impact of roundoff errors for small $h$.
+		\begin{notice}
+		 The Newton Method has \emph{Local quadratic convergence} if $DF(x^*)$ is regular.
+		\end{notice}
+		\begin{notice}[A posteriori termination criterion] 
+			Quit as soon as
+			  \[ 
+			   \norm{DF\left(x^{(k)}\right)^{-1}F(x^{(k)}} < \tau \norm{x^{(k)}}
+			  \]
+				Since we expect that $DF\left(x^{(k-1)}\right) \approx DF\left(x^{(k)}\right)$, when the Newton Iteration has converged
+		\end{notice}
+		The Newton Method
+		\begin{itemize}
+		 \item converges \emph{asymptotically} very fast: doubling of number of significant digits in each step
+		 \item often a \emph{very small region of convergence}, which requires an initial guess rather close to the solution
+		\end{itemize}
+	\subsection{Damped Newton Method}
+		We observe an ''overshooting`` of the Newton correction.
+		\begin{description}
+		 \item[Idea:] Use a damping factor for the Newton correction:
+		 \[
+		  x^{(k+1)} := x^{(k)} - \lambda^{(k)} DF\left(x^{(k)}\right)^{-1}F \left(x^{(k)}\right) \qquad \qquad \text{with: } \lambda^{(k)} > 0
+		 \]
+		 \item[Choice of damping factor:] Use maximal $\lambda^{(k)} > 0: \norm{\Delta \overline{x} \left( \lambda^{(k)}\right) } \leq \left( 1 -\frac{\lambda^{(k)}}{2} \right) \norm{\Delta x^{(k)}}$ where
+		 \begin{align*}
+			\Delta x^{(k)} &= DF\left(x^{(k)}\right)^{-1} F\left(x^{(k)} \right)\\
+			\Delta \overline{x}\left(\lambda^{(k)}\right) &= DF\left(x^{(k)}\right)^{-1} F\left(x^{(k)}+\lambda^{(k)}\Delta x^{(k)}\right)
+		 \end{align*}
+		\end{description}
+		\begin{notice}[Policy] 
+		 Reduce damping factor by a factor $q \in ]0,1[$ (usually $q= \tfrac{1}{2}
+		 $) until the affine invariant natural monotonicity test passed.
+		\end{notice}
+	\subsection{Quasi-Newton Method (Broyden Method)}
+		Use when $DF(x)$ is not available and numerical differentiation is too expensive.\\
+		Worthwhile for dimensions $n\gg 1$ and low accuracy requirements.
+		

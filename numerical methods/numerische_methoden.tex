@@ -1,0 +1,72 @@
+\documentclass[a4paper]{scrartcl}
+
+\usepackage{amsmath, amsthm, amssymb, amsfonts} 
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}  
+%\usepackage[rflt]{floatflt}  
+\usepackage{graphics}
+\usepackage{epsfig} 
+%\usepackage{qtree} 
+\usepackage{textcomp}
+\usepackage{url}
+
+% PDF Import support
+\usepackage{pdfpages}
+% Support for PDF scaling
+\usepackage{graphicx}
+% Algorithmen
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{listings} 
+% \lstset{numbers=left, numberstyle=\tiny, numbersep=5pt} 
+\lstset{
+	basicstyle=\ttfamily\scriptsize\mdseries,
+	keywordstyle=\bfseries\color{blue},
+	identifierstyle=,
+% 	stringstyle=\itshape\color{red},
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=10,
+	breaklines=true,
+	frame=none,
+	showstringspaces=false,
+	tabsize=4,
+% 	backgroundcolor=\color{gray},
+% 	morecomment=[s][\color{green}]{/+}{+/},
+	commentstyle=\color{gray},	
+	captionpos=b,
+	float=htbp,
+}
+\newcommand{\norm}[1]		{\left|\left| #1 \right|\right|}
+\newcommand{\mbf}[1]		{\mathbf{#1}}
+
+\usepackage{tbabstract}
+\newcommand{\K}     {\mathbb{K}}
+
+\author{Pascal Spörri\\pascal@moeeeep.com}
+\title{Numerical Methods for Computational Science and Engineering\\Summary HS 2009}
+%\thanks{Licence: Creative Commons Attribution-Share Alike 3.0 Unported (\url{http://creativecommons.org/licenses/by-sa/3.0/})}}
+\date{\today}
+\usepackage[colorlinks=false,pdfborder = {0 0 0 0}]{hyperref}
+
+\begin{document}
+\maketitle
+\clearpage
+\tableofcontents
+
+\include{chp00_theory}
+\include{chp01_computing_with_matrices_and_vectors}
+\include{chp02_direct_methods_for_linear_systems_of_equations}
+\include{chp03_iterative_methods_for_non-linear_systems_of_equations}
+\include{chp04_krylov_methods_for_linear_systems_of_equations}
+\include{chp05_eigenvalues}
+\include{chp06_least_squares}
+\include{chp07_filtering_algorithms}
+\include{chp08_polynomial_interpolation}
+\include{chp09_piecewise_polynomials}
+\include{chp10_numerical_quadrature}
+\include{chp11_integration_of_ode_single_step_methods}
+\include{chp99_applications}
+
+\end{document}

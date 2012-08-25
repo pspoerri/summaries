@@ -1,0 +1,25 @@
+\part{Least Squares}
+
+\begin{description}
+	\item[Given] $\mbf A \in\K^{m,n},\ m,\ n \in \N,\ b \in \K^m$
+	\item[Find] $x \in \K^n$ such that
+		\begin{enumerate}
+			\item $\norm{\mbf A x - b} = \inf \{\norm{\mbf A y - b}_2 : y \in \K^\}$
+			\item $\norm{x}$ is minimal
+		\end{enumerate}
+\end{description}
+
+\begin{lemma}[Existence \& Uniqueness of Solutions of the Least squares problem]
+	The least squares problem for $\mbf A \in \K^{m,n}$, $\mbf A \neq 0$ has a unique solution for every $b \in \K^m$
+\end{lemma}
+
+\section{Normal Equations}
+	\[
+		\mbf A^H \mbf Ax = \mbf A^H b
+	\]
+	Numerically unstable
+	\[
+		cond_2(\mbf A^H \mbf A) = cond_2(\mbf A)^2
+	\]
+
+
