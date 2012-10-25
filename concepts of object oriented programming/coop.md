@@ -2,7 +2,90 @@ Concepts of Object Oriented Programming - Summary
 =================================================
 Pascal Spörri <pascal@spoerri.io>
 
-## Subtyping
+## Types and Subtyping
+
+### Types
+
+Definition Type System: 
+> A type system is a tractable syntactic method for proving absence of certain program behaviors by classifying phrases according to the kinds of values they compute.
+
+>* Syntactic: Rules are based on form and not behavior
+>* Phrases: Expressions, methods, etc. of a program
+>* Kinds of values: Types
+
+#### Type systems
+
+Untyped languages:
+
+* Do not classify values into types
+* Example: Assembler
+
+Weakly-typed languages:
+
+* Classify values into types, but do not strictly enforce additional restrictions
+* Examples: C, C++
+
+Strongly-typed languages:
+
+* Enforce that all operations are applied to arguments of the appropriate types.
+* Examples: C#, Eiffel, Java, Python, Scala, Smalltalk
+
+
+Definition Type:
+> A type is a set of values sharing some properties. A value v has type T if v is an element of T.
+
+##### Nominal Types
+The type is based on the type name. Examples:
+>	C++, Eiffel, Java, Scala
+
+##### Structural Types
+The type is based on the _availability of methods and fields_. Examples:
+> Python, Ruby, Smalltalk
+
+#### Type Checking
+
+##### Static Type Checking
+
+* Each expression of a program has a type (Java):
+
+		"A string"
+		5 + 7
+
+* Types of variables and methods are declared explicitly or inferred (Java):
+
+		int a;
+		boolean equals(Object o)
+
+* Types of expressions can be derived from the types of their constituents (Java):
+
+		a + 7
+		"A number: " + 7
+		"A string".equals( null )
+
+* Type rules are used at compile time to check whether a program is correctly typed. 
+
+##### Dynamic Type Checking
+
+* Variables, methods, and expressions of a program are typically not typed (Python): 
+
+		"A string"
+		5 + 7
+		a = 42;
+		def foo (o): …
+
+* Every object and value has a type (Python):
+
+		a + 7
+		"A number: " * 7
+		foo(none)
+
+		a = "A String"
+		a = 7
+
+* Run-time system checks that operations are applied to expected arguments
+
+
+### Subtyping
 
 ### Behavioral Subtyping
 
@@ -26,8 +109,7 @@ _Subtyping_ expresses _classification_:
 _Inheritances_ is a means of _code reuse_:
 
 * Specialization
-
-Inheritance is _usually coupled_ with subtyping. 
+* Inheritance is _usually coupled_ with subtyping. 
 
 ### Subclassing
 
@@ -54,4 +136,8 @@ _Subclassing_ = Subtyping + Inheritance
 	
 ### Multiple Inheritance
 
+All object-oriented languages support multiple subtyping:
+
+* One type can have several supertypes 
+* Subtype relation forms a DAG.
 
