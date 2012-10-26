@@ -64,6 +64,16 @@ The type is based on the _availability of methods and fields_. Examples:
 
 * Type rules are used at compile time to check whether a program is correctly typed. 
 
+###### Static Type Safety
+
+Definition: 
+> A programming language is called type-safe if its design prevents type errors.
+
+Statically type-safe object-oriented languages guarantee the following type invariant:
+> In every execution state, the type of the value held by variable v is a subtype of the declared type of v
+
+Type safety guarantees the absence of certain run-time errors.
+
 ##### Dynamic Type Checking
 
 * Variables, methods, and expressions of a program are typically not typed (Python): 
