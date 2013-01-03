@@ -1,0 +1,98 @@
+\section{Introduction}
+Many problems cannot be solved on "sequential" systems. In order to have a meaningful performance computers exploit parallelism (since 1955).
+\subsection{Overview}
+%\subsubsection{Parallel vs. Concurrent}
+\begin{description}
+\item[Parallel] For two concurrent activities $A$ and $B$, $A$ and $B$ are executed in \emph{parallel} when $A$ may be executed while $B$ is executed. 
+	\begin{itemize}
+		\item $A$ starts at time $T1$, ends at $T3$
+		\item $B$ starts at time $T2$, ends at $T4$
+		\item Intervals $(T1, T2)$ and $(T2, T4)$ may overlap. 
+		\item Execution can be by separate unit (resource) or by interleaved use of one resource.
+		
+	\end{itemize}
+
+\item[Concurrent] For two concurrent activities $A$ and $B$, $A$ and $B$ are executed \emph{concurrently} when $A$ is executed while $B$ is executed.
+	\begin{itemize}
+		\item This usually requires separate resources. 
+	\end{itemize}
+ 
+\end{description}
+
+\paragraph{Activity} is a part of a machine operation on compound, scalar data or a sequence of operations. And can be supported by a \emph{Hardware platform} as:
+\begin{itemize}
+\item As part of a machine operation on scalar data:
+	\begin{description}
+		\item Instruction-level parallelism (ILP). \emph{Handled by the Compiler}
+			\begin{itemize}
+				\item Pipelining
+				\item (Very) Long instruction words (VLIW)
+				\item Superscalar
+			\end{itemize}
+	\end{description}
+\item Machine operation on compound data. \emph{Handled by the compiler or offloaded to a library}
+	\begin{description}
+		\item Vector instructions
+	\end{description}
+\item Sequence of operations. \emph{Handled by expert programmers or sometimes the compiler}
+	\begin{description}
+		\item Multiprocessors
+		\item Multicores
+		\item Hyper-threading
+	\end{description}
+\end{itemize}
+
+\paragraph{Sequence of operations} are for many reasons the most interesting part of spectrum since we have:
+\begin{itemize}
+	\item Platform issues
+	\item Software issues
+\end{itemize}
+
+\paragraph{Threads} are an "execution of an instruction sequence":
+\begin{itemize}
+	\item Instruction sequence
+	\item Pointer to next instruction
+\end{itemize}
+
+\paragraph{Thread Communication} can be done either through
+\begin{itemize}
+	\item \emph{Explicit communication}: {\bf Message passing}
+		\begin{description}
+			\item Example Systems:
+			\begin{itemize}
+				\item MPI	
+				\item PVM
+				\item many OS (Thoth, Demos, ...)
+			\end{itemize}
+		\end{description}
+
+	\item \emph{Implicit communication}: {\bf Shared memory}
+		\begin{description}
+			\item Reality of System Design: Caching
+		\end{description}
+\end{itemize}
+
+
+\paragraph{Coordination} of threads can be achieved through
+\begin{itemize}
+	\item \emph{Synchronization} by using
+		\begin{description}
+			\item Mutual exclusion (for data access)
+			\item Critical sections
+			\item Waiting
+		\end{description}
+		with
+		\begin{itemize}
+			\item Special hardware instructions such as \emph{test-and-set} or \emph{increment-and-set}
+			\item Runtime system services
+			\item Programming language support
+		\end{itemize}
+
+	\item \emph{Barriers} with
+		\begin{itemize}
+			\item Dedicated network(s)
+			\item Combining network
+			\item Software implementations
+		\end{itemize}
+
+\end{itemize}
