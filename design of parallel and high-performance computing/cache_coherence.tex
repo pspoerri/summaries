@@ -1,0 +1,124 @@
+\section{Cache Coherence}
+Processor speed improves (approx.) 60\% per year:
+\begin{itemize}
+	\item until 2005 mainly by increasing the clock rate,
+	\item after 2005 by increasing the number of cores.
+\end{itemize}
+The memory speed however only improves by (approx.) 10\% per year. Which results in a widening performance gap.
+ 
+Caching may result in multiple copies for a memory location in multiple caches. Cache coherence manages the existence of multiple copies. 
+\emph{Requirements}: 
+\begin{itemize}
+	\item Write propagation: Writes are eventually visible to all processors
+	\item Write serialisation: Every processor should see the writes to the same location in the same order.
+\end{itemize}
+
+\begin{description}
+	\item[Concerns] $\text{}$
+		\begin{itemize}
+			\item Performance
+			\item Implementation cost
+			\item Correctness
+		\end{itemize}
+	\item[Issues] $\text{}$
+		\begin{itemize}
+			\item Detection (when is it necessary for the cache controller to become active)
+			\item Enforcement (how the coherence is established)
+			\item Precision of block-sharing information
+			\item Block size
+		\end{itemize}
+	\item[Mechanisms] $\text{}$
+		\begin{description}
+			\item[Snooping-based cache coherence] $\text{}$
+				\begin{itemize}
+					\item Shared bus or network
+					\item Cache controller "snoops" (observes) bus transactions
+					\item Cache controller aware of state of the cache's data
+				\end{itemize}
+
+			\item[Directory-based cache coherence] Record (in memory) information necessary to maintain coherence
+		\end{description}
+
+\end{description}
+
+\subsection{Problems}
+\begin{enumerate}
+	\item Stale values
+		\begin{itemize}
+			\item $CPU_1$ uses stale value that has already been modified by $CPU_0$
+			\item \emph{Solution} 
+				\begin{itemize}
+					\item Don't allow this to happen
+					\item Invalidate all copies before allowing a write to proceed
+				\end{itemize}
+		\end{itemize}
+	\item Loosing result of a write
+		\begin{itemize}
+			\item An incorrect write-back order of modified cache lines applies the writebacks in an order different from the order of the write operations
+			\item \emph{Solution}> Disallow more than one modified copz
+		\end{itemize}
+\end{enumerate}
+
+\subsection{Protocol Approaches}
+\begin{description}
+	\item[Invalidation-based] $\text{}$
+		\begin{itemize}
+			\item All coherency-related traffic broadcast to all CPUs
+			\item Each processor snoops traffic and reacts accordingly
+				\begin{itemize}
+					\item Invalidate lines written to by antother CPU
+					\item Signal sharing for cache lines currently in cache
+				\end{itemize}
+			\item Straightforward solution for bus-based systems
+			\item Suited for small-scale systems
+			\item Comparison:
+				\begin{itemize}
+					\item Only write misses hit the bus (suited for write-back caches)
+					\item Subsequent writes to the cache-line are write-hits
+					\item Good for multiple writes to the same cache line by the same CPU
+				\end{itemize}
+
+		\end{itemize}
+	\item[Update-based] $\text{}$
+		\begin{itemize}
+			\item Uses central directory for cache line ownershop
+			\item Write operation updates copies in other caches
+				\begin{itemize}
+					\item Can update all other CPUs at once (less bus traffic)
+					\item But: Multiple writes cause multiple updates (more bus traffic)
+				\end{itemize}
+			\item Suited for large-scale systems
+			\item Comparison:
+				\begin{itemize}
+					\item All sharers of a cache line continue to hit in the cache after a write by one cache.
+						\emph{Assumption}: There are more accesses until this line must be evicted for other reasons.
+					\item Well-suited for producer-consumer pattern
+					\item Risks wasting bandwidth
+				\end{itemize}
+
+		\end{itemize}
+\end{description}
+
+\subsection{MESI Protocol}
+Each cache line is in one of $4$ states>
+\begin{description}
+	\item[Modified (M)] $\text{}$
+		\begin{itemize}
+			\item No copies in other caches, local copy has been modified
+			\item Memory is stale
+		\end{itemize}
+	\item[Exclusive (E)]
+		\begin{itemize}
+			\item No copies of other caches
+			\item Memory is up to date
+		\end{itemize}
+	\item[Shared]
+		\begin{itemize}
+			\item Unmodified copies \emph{may} exist in other caches
+			\item Memorz is up to date
+		\end{itemize}
+
+	\item[Invalid (I)] not in cache
+\end{description}
+
+

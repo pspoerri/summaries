@@ -95,3 +95,49 @@ Many problems cannot be solved on "sequential" systems. In order to have a meani
 			\item Software implementations
 		\end{itemize}
 \end{itemize}
+
+\subsection{History of Performance Gains}
+\subsubsection{Clock Rate}
+\begin{itemize}
+	\item Get more cycles $\implies$ do the same work faster
+	\item Heat dissipation (too much, too hard to dissipate)
+	\item Power consumption too high (example: mobile devices)
+	\item Electric current leakage problem
+\end{itemize}
+
+\subsubsection{Execution Optimisation}
+Do more work per cycle
+\begin{itemize}
+	\item Increase instruction level parallelism (ILP)
+	\item Instruction prefetching and reordering
+	\item Pipelined function units, branch prediction
+	\item Out-of-order execution
+\end{itemize}
+\subsubsection{Cache}
+Stay away from RAM
+\begin{itemize}
+	\item Increasing cache size (from few KB to several MB)
+	\item More cache levels (up to 3 levels)
+	\item Working set should fit in cache (but applications manipulate more data)
+\end{itemize}
+
+\subsection{New Performance Drivers}
+Instead of increasing clock clock speeds and instruction throughput we get:
+\begin{description}
+	\item[Simultaneous multithreading] Running 2+ hardware threads in parallel inside a processor
+		\begin{itemize}
+			\item SMT-processor appears to OS as 2 (logical) processors (OS can schedule 2 threads simultaneously)
+			\item \emph{Limitation}: Only 1 processor (cache, FPU, etc...)
+		\end{itemize}
+	\item[Multicore] 2+ cores in a single processor
+\end{description}
+
+\subsection{Moore's law}
+The number of transistors doubles every 2 years:
+\begin{itemize}
+	\item This predicts exponential growth for transistor densities
+	\item Also applies to other related areas (such as clock speed)
+\end{itemize}
+unfortunately this is restricted with physical limits (see paper "The free Lunch is over")
+
+
