@@ -49,15 +49,15 @@ typedef struct {
 
 typedef Person **List;
 
-void printAll( List l ) {
+void printAll(List l) {
   int i;
-  for ( i=0; l[ i ] != NULL; i++ )
-    switch ( l[ i ] -> kind ) {
+  for(i=0; l[ i ] != NULL; i++)
+    switch(l[ i ]->kind) {
     case STU:
-      printStudent( l[ i ] -> u.s );
+      printStudent(l[ i ]->u.s);
       break;
     case PROF:
-      printProf( l[ i ] -> u.p );
+      printProf(l[ i ]->u.p);
       break;
   }
 }
@@ -90,18 +90,18 @@ typedef struct {
 } Person;
 
 // Change the printAll function
-void printAll( List l ) {
+void printAll(List l) {
   int i;
-  for ( i=0; l[ i ] != NULL; i++ )
-    switch ( l[ i ] -> kind ) {
+  for(i=0; l[ i ] != NULL; i++)
+    switch(l[ i ]->kind) {
     case STU:
-      printStudent( l[ i ] -> u.s );
+      printStudent(l[ i ]->u.s);
       break;
     case PROF:
-      printProf( l[ i ] -> u.p );
+      printProf(l[ i ]->u.p);
       break;
     case ASSI:
-      printAssi( l[ i ] -> u.a );
+      printAssi(l[ i ]->u.a);
       break;
   }
 }
@@ -230,12 +230,12 @@ The quality of being able to assume different forms.\par\emph{Merriam-Webster Di
   \begin{lstlisting}
   class List<G> {
     G[ ] elems;
-    void append( G p ) { ... }
+    void append(G p) { ... }
   }
   
   List<String> myList;
-  myList = new List<String>( );
-  myList.append( “String” );
+  myList = new List<String>();
+  myList.append("String”);
   \end{lstlisting}
  \item[Ad-hoc Polymorphism] Method overloading
   \begin{itemize}
@@ -245,11 +245,11 @@ The quality of being able to assume different forms.\par\emph{Merriam-Webster Di
   \end{itemize}
   \begin{lstlisting}
   class Any {
-    void foo( Polar p ) { ... }
-    void foo( Coord c ) { ... }
+    void foo(Polar p) { ... }
+    void foo(Coord c) { ... }
   }
-  x.foo( new Coord( 5, 10 ) );
-  x.foo( new Polar( 5, 10 ) );
+  x.foo(new Coord(5, 10));
+  x.foo(new Polar(5, 10));
   \end{lstlisting}
 \end{description}
 
@@ -257,6 +257,194 @@ The quality of being able to assume different forms.\par\emph{Merriam-Webster Di
 \begin{definition}
  Adding specific properties to an object or refining a concept by adding further characteristics.
 \end{definition}
+\begin{itemize}
+ \item Start from general objects or types
+ \item Extend these objects and their implementations(add properties)
+ \item Requirement: Behavior of specialized objects is compliant to behavior of more general objects
+ \item Program parts that work for the more general objects work as well for specialized objects
+ \item Implementation inheritance, reuse.
+\end{itemize}
+
+\subsection{Meeting the Requirements}
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.7\textwidth]{img/01_meeting_the_requirements}
+      \caption{Meeting the Requirements}
+\end{figure}
+
+\subsection{Summary}
+Core concepts of the OO-paradigm:
+\begin{itemize}
+ \item Object model
+ \item Interfaces and encapsulation
+ \item Classification and polymorphism
+\end{itemize}
+Core concepts are \emph{abstract concepts} to meet the new requirements. To apply the core concepts we need ways to \emph{express them in programs}. \emph{Language concepts} enable and facilitate the application of the core concepts.
 
 
+\section{Language Concepts}
+% \begin{description}
+%  \item[Types]
+%  \item[Methods]
+%  \item[Inheritance]
+%  \item[Dynamic Method Binding] Method implementation is selected at runtime, depending on the type of the receiver object.
+%  \begin{lstlisting}
+%   void printAll(Person[ ] l) {
+%     for(int i=0; l[ i ] != null; i++)
+%     l[ i ] . print();
+%   }
+%  \end{lstlisting}
+\lstset{language=C}
+Why use an OO-language when we can describe a program in an imperative language?
+\paragraph{Example} Previous Problem in C.
+\begin{itemize}
+ \item Type declaration:
+ \begin{lstlisting}
+  typedef char* String;
+  typedef struct sPerson Person;
+ \end{lstlisting}
+ \item Record declaration with fields and methods (function pointers)
+ \begin{lstlisting}
+  struct sPerson {
+    String name;
+    void (*print)(Person*);
+    String (*lastName)(Person*);
+  };
+ \end{lstlisting}
+ \item Method definitions:
+ \begin{lstlisting}
+  void printPerson(Person *this) {
+    printf("Name: %s\n", this->name);
+  }
+  String LN_Person(Person *this)
+    {...}
+ \end{lstlisting}
+ \item Constructor definitions:
+ \begin{lstlisting}
+  Person *PersonC(String n) {
+    Person *this   = (Person *) malloc(sizeof(Person));
+    this->name     = n;
+    this->print    = printPerson;
+    this->lastName = LN_Person;
+    return this;
+  }
+ \end{lstlisting}
+ \item Using constructors, fields, and methods
+ \begin{lstlisting}
+  Person *p;
+  p = PersonC("Tony Hoare");
+  p->name = p->lastName(p);
+  p->print(p);
+ \end{lstlisting}
+ \item Inheritance
+  \begin{itemize}
+   \item Copy code
+   \item Adapt function signatures
+   \item Define Specialized Methods
+   \item Reuse Person for Student
+   \item View Student as Person (cast)
+  \end{itemize}
+ \begin{lstlisting}
+  typedef struct sStudent Student;
+  struct sStudent {
+    String name;
+    void (*print)(Student*);
+    String (*lastName)(Student*);
+    int regNum;
+  };
+  void printStudent(Student *this) {
+    printf("Name: %s\n", this->name);
+    printf("No: %d\n", this->regNum);
+  }
+  Student *StudentC(String n, int r) {
+    Student *this  = (Student *) malloc(sizeof(Student));
+    this->name     = n
+    this->print    = printStudent;
+    this->lastName = (String (*)(Student*)) LN_Person;
+    this->regNum   = r;
+    return this;
+  }
+ \end{lstlisting}
+ \item Subclassing and Dynamic Binding
+  \begin{itemize}
+   \item Student has all fields and methods of Person
+   \item Casts are necessary
+  \end{itemize}
+  \begin{lstlisting}
+    Student *s;
+    Person *p;
+    s = StudentC("Susan Roberts", 0);
+    p = (Person *) s;
+    p->name = p->lastName(p);
+    p->print(p);
+  \end{lstlisting}
+  \item Methods are selected dynamically
+  \begin{lstlisting}
+    void printAll( Person **l ) {
+      int i;
+      for (i=0; l[i] != NULL; i++)
+        l[i]->print(l[i]);
+      }
+    }
+  \end{lstlisting}
+\end{itemize}
 
+\subsubsection{Discussion of the C Solution}
+
+\paragraph{Pros} We can express \emph{objects}, \emph{fields}, \emph{methods}, \emph{constructors}, and \emph{dynamic method binding} by imitating OO-programming. The union in Person and the switch statement in \lstinline{printAll} (previous example) became dispensable.
+The behavior of reused code (\lstinline{Person}, \lstinline{printAll}) can be \emph{adapted} to introduce Student \emph{without changing the implementation}.
+\paragraph{Cons} Inheritance has to be replace by \emph{code duplication}. Subtyping can be simulated, but it requires:
+\begin{itemize}
+ \item Casts, which is \emph{not type safe}
+ \item \emph{Same memory layout} of super and subclasses (same fields and function pointers in same order), which is \emph{extremely error-prone}.
+\end{itemize}
+Appropriate language support is needed to apply object-oriented concepts.
+
+\subsubsection{A Java Solution}
+\lstset{language=Java}
+\begin{lstlisting}
+class Person {
+  String name;
+  void print() {
+    System.out.println("Name: " + name);
+  }
+  String lastName() {...}
+  Person(String n) {name = n}
+}
+class Student extends Person {
+  int regNum;
+  void print() {
+    super.print();
+    System.out.println(“No: “ + regNum);
+  }
+  Student(String n, int i ) {
+    super(n);
+    regNum = i;
+  }
+}
+void printAll(Person[] l) {
+  for (int i=0; l[i] != null; i++)
+    l[i].print();
+}
+\end{lstlisting}
+
+The Java solution uses
+\begin{description}
+ \item[Inheritance] to avoid code duplication.
+ \item[Subtyping] to express classification.
+ \item[Overriding] to specialize methods.
+ \item[Dynamic Binding] to adapt reused algorithms.
+\end{description}
+Java supports the OO-language concepts and the Java solution is
+\begin{itemize}
+ \item Simpler and smaller
+ \item Easier to maintain (no duplicate code)
+ \item Type safe
+\end{itemize}
+
+\subsubsection{Concepts Summary}
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.7\textwidth]{img/01_concepts_summary}
+      \caption{Concepts Summary}
+\end{figure}

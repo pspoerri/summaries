@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 
-\usepackage[x11names,svgnames]{xcolor}
+\usepackage[x11names,svgnames,dvipsnames]{xcolor}
 
 \usepackage{float}
 \usepackage{multicol}  
@@ -69,7 +69,11 @@
 {\hfill\closequote\end{quote}\end{snugshade}}
 %% End Blockquote
 
+\newcommand\novspace{\@minipagetrue}
 \newtheorem*{definition}{Definition}
+
+\let\oldemph\emph
+\renewcommand{\emph}[1]{{\color{DeepSkyBlue4}{\oldemph{#1}}}}
 
 
 \author{Pascal Spörri\\pascal@spoerri.io}
