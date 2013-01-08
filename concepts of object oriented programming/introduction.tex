@@ -448,3 +448,91 @@ Java supports the OO-language concepts and the Java solution is
     \includegraphics[width=0.7\textwidth]{img/01_concepts_summary}
       \caption{Concepts Summary}
 \end{figure}
+
+\section{Language Design}
+A good language should resolve design trade-offs in a way \emph{suitable for its application domain}.
+\paragraph{Design Goals} $\text{}$
+\begin{description}
+ \item[Simplicty] $\text{}$
+  \begin{itemize}
+   \item Syntax and semantics can be easily understood by users and implementers of the language.
+   \item This doesn't mean that the number of constructs should be limited.
+   \item Simple languages: BASIC, Pascal, C.
+   \item It is not know whether the Java 5 type system (generics) is deciable.
+  \end{itemize}
+ \item[Expressiveness]  $\text{}$
+  \begin{itemize}
+   \item Language can (easily) express complex processes and structures
+   \item Expressive languages: C\#, Scala, Python
+   \item Expressiveness is often conflicting with simplicity:
+  \end{itemize}
+ \item[(Static) Safety] $\text{}$
+  \begin{itemize}
+   \item Language discourages errors and allows errors to be discovered and reported. Ideally at compile time.
+   \item Safe languages: Java, C\#, Scala.
+   \item Often conflicting with expressiveness and performance.
+  \end{itemize}
+ \item[Modularity]  $\text{}$
+  \begin{itemize}
+   \item Language allows modules to be compiled separately
+   \item Modula languages: Java, C\, Scala
+   \item Often conflicting with expressiveness and performance. 
+  \end{itemize}
+ \item[Performance]  $\text{}$
+  \begin{itemize}
+   \item Programs written in the language can be executed efficiently
+   \item Efficient languages: C, C++, Fortran.
+   \item Often conflicting with safety and productivity:
+    \begin{itemize}
+     \item C arrays:
+      \begin{itemize}
+       \item Sequence of memory locations
+       \item Access is a simple look-up with only 2-5 machine instructions
+      \end{itemize}
+     \item Java arrays
+      \begin{itemize}
+       \item Sequence of memory locations \emph{plus length}
+       \item Access is look-up \emph{plus bound-check}
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+ \item[Productivity]  $\text{}$
+  \begin{itemize}
+   \item Language leads to low costs of writing programs
+   \item Closely related to expressiveness
+   \item Languages for high productivity:
+    \begin{itemize}
+     \item Visual Basic
+     \item Python
+    \end{itemize}
+   \item Often conflicting with static safety
+  \end{itemize}
+ \item[Backwards Compatibility]  $\text{}$
+  \begin{itemize}
+   \item Newer language version work and interface with programs in older version
+   \item Backwards compatible languages:
+    \begin{itemize}
+     \item Java
+      \begin{lstlisting}
+      class Tuple<T> {
+        T first; T second;
+        void set(T first, T second) {
+          this.first = first;
+          this.second = second;
+        }
+      }
+      class Client {
+        static void main(String[] args) {
+          Tuple t = new Tuple();
+          t.set("Hello", new Client());
+        }
+      }
+      \end{lstlisting}
+
+     \item C
+    \end{itemize}
+   \item Often in conflict with simplicity and performance.
+  \end{itemize}
+
+
+\end{description}
