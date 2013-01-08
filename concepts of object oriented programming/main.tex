@@ -1,0 +1,86 @@
+\documentclass[a4paper]{scrartcl}
+\usepackage{amsmath,amssymb,graphicx,amsthm, amssymb, amsfonts}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage[x11names,svgnames]{xcolor}
+
+\usepackage{float}
+\usepackage{multicol}  
+%\usepackage[rflt]{floatflt}  
+\usepackage{graphics}
+\usepackage{epsfig} 
+%\usepackage{qtree} 
+\usepackage{textcomp}
+\usepackage{url}
+
+% PDF Import support
+\usepackage{pdfpages}
+% Support for PDF scaling
+\usepackage{graphicx}
+% Algorithmen
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{listings} 
+% \lstset{numbers=left, numberstyle=\tiny, numbersep=5pt} 
+\lstset{
+	basicstyle=\ttfamily\scriptsize\mdseries,
+	keywordstyle=\bfseries\color{blue},
+	identifierstyle=,
+% 	stringstyle=\itshape\color{red},
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=10,
+	breaklines=true,
+	frame=none,
+	showstringspaces=false,
+	tabsize=4,
+% 	backgroundcolor=\color{gray},
+% 	morecomment=[s][\color{green}]{/+}{+/},
+	commentstyle=\color{gray},	
+	captionpos=b,
+	float=htbp,
+}
+\newcommand{\norm}[1]		{\left|\left| #1 \right|\right|}
+\newcommand{\mbf}[1]		{\mathbf{#1}}
+
+\newcommand{\K}     {\mathbb{K}}
+
+%%% Nice Blockquote from 
+%% http://tex.stackexchange.com/questions/16964/block-quote-with-big-quotation-marks
+% \usepackage[svgnames]{xcolor}
+
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage{libertine} % or any other font package (or none)
+  \newcommand*\quotefont{\fontfamily{fxl}} % selects Libertine for quote font
+\usepackage{tikz}
+\usepackage{framed}
+% Make commands for the quotes
+\newcommand*{\openquote}{\tikz[remember picture,overlay,xshift=-15pt,yshift=-12pt]
+     \node (OQ) {\quotefont\fontsize{60}{60}\selectfont``};\kern0pt}
+\newcommand*{\closequote}{\tikz[remember picture,overlay,xshift=15pt,yshift=10pt]
+     \node (CQ) {\quotefont\fontsize{60}{60}\selectfont''};}
+% select a colour for the shading
+\definecolor{shadecolor}{named}{LightGoldenrodYellow}
+% wrap everything in its own environment
+\newenvironment{shadequote}%
+{\begin{snugshade}\begin{quote}\openquote}
+{\hfill\closequote\end{quote}\end{snugshade}}
+%% End Blockquote
+
+\newtheorem*{definition}{Definition}
+
+
+\author{Pascal Spörri\\pascal@spoerri.io}
+\title{Concepts of Object Oriented Programming\\Summary HS 2012}
+%\thanks{Licence: Creative Commons Attribution-Share Alike 3.0 Unported (\url{http://creativecommons.org/licenses/by-sa/3.0/})}}
+\date{\today}
+\usepackage[colorlinks=false,pdfborder = {0 0 0 0}]{hyperref}
+
+
+\begin{document}
+\maketitle
+\newpage
+\input{introduction}
+\end{document}
