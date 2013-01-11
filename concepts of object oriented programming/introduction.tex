@@ -73,7 +73,7 @@ void printAll(List l) {
 // Student and Professor structs
 typedef struct {
   char *name;
-  char PhD_student; /* ‘y‘, ‘n‘ */
+  char PhD_student; /* 'y', 'n' */
 } Assistant;
 
 // Student and Professor print code
@@ -235,7 +235,7 @@ The quality of being able to assume different forms.\par\emph{Merriam-Webster Di
   
   List<String> myList;
   myList = new List<String>();
-  myList.append("String”);
+  myList.append("String");
   \end{lstlisting}
  \item[Ad-hoc Polymorphism] Method overloading
   \begin{itemize}
@@ -415,7 +415,7 @@ class Student extends Person {
   int regNum;
   void print() {
     super.print();
-    System.out.println(“No: “ + regNum);
+    System.out.println("No: "+ regNum);
   }
   Student(String n, int i ) {
     super(n);
