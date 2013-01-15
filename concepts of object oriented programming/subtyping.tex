@@ -54,6 +54,13 @@ A type is a set of values sharing some properties. A value v has type T if v is 
  \item[Structural Types] are based on \emph{availability of methods and fields}\\
  Examples: Python, Ruby, Smalltalk
 \end{description}
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.7\textwidth]{img/02_nominal_types}
+      \caption{Type Membership}
+\end{figure}
+
 \subsubsection{Example}
 
 \lstset{language=C}
@@ -237,5 +244,103 @@ Subtype objects have \emph{wider interfaces} than supertype objects:
  At run time, \lstinline{m} could access a private method of \lstinline{Sub}, thereby violating information hiding.
  \item[Contravariant parameters] An \emph{overriding method must not require \textbf{more specific} parameter types} than the method it overrides.
  \item[Covariant results] An \emph{overriding method must not have \textbf{more genera} result type} than then the ethod it overrides. 
+ \item[Fields] \emph{Subtypes must not change the type of fields}
+ 	Regard field as pair of getter and setter methods:
+ 	\begin{itemize}
+ 		\item \emph{Specializing a field type} \lstinline{S<:T} corresponds to specializing the argument of the setter (\emph{violates the contravariant parameters})
+ 		\item \emph{Generalizing a field type} \lstinline{T<:S} corresponds to generalizing the result of the getter (\emph{violates covariant results}).
+ 		
+ 	\end{itemize}
+ \item[Immutable Fields] Immutable fields do not have setters. \emph{Types of immutable fields can be specialized in subclasses} \lstinline{S<:T}. This only works in the absence of inheritance. 
+ \item[Covariant Arrays] In Java and C\# \emph{arrays are covariant}. If \lstinline{S<:T} then \lstinline{S[] <: T[]}. Each \emph{array update requires} a \emph{run-time check}. Covariant arrays allow one to write methods that work for all arrays  such as:
+ 	\begin{lstlisting}
+ 	Class Arrays {
+ 		public static void fill(Object[] a, Object val) { ... }
+ 	}
+ 	\end{lstlisting}
+	Generics allow a solution that is expressive and statically-safe. 
 \end{description}
+
+\subsection{Reuse: Adapter Pattern}
+Nominal Subtyping can impede reuse.  Consider two library classes:
+\begin{lstlisting}
+class Resident {	String 	getName( ) { ... } 
+	Data 	dateOfBirth( ) { ... }	Address	getAddress( ) { ... } 
+}
+class Employee {	String 	getName( ) { ... } 
+	Data 	dateOfBirth( ) { ... } 
+	int		getSalary( ) { ... }}
+\end{lstlisting}
+Now we would like to store Resident and Employee objects in a collection of type Person[]. Implement an Adapter:
+\begin{itemize}
+	\item Subtype of Person
+	\item Delegate calls to adaptee
+	\item Adapter requires boilerplate code
+	\item Adapter causes memorz and run-time overhead
+	\item Works also if Person is reused.
+\end{itemize}
+
+\begin{lstlisting}[caption=Adapter Pattern]
+interface Person { 
+	String 	getName(); 
+	Data 	dateOfBirth();}
+class EmployeeAdapter implements Person { 
+	private	Employee adaptee;	String	getName() {
+		return adaptee.getName(); 
+	} 
+	Data dateOfBirth() { 
+		return adaptee.dateOfBirth(); 
+	}}
+\end{lstlisting}
+
+\subsection{Generalisation}
+Most OO-languages support specialisation of superclasses (top-down development). Some research languages also suppoert \emph{generalisation} (bottom-up development).
+\begin{lstlisting}
+	interface Person generalizes Resident, Employee {
+		String	getName();
+		Data	dateOfBirth();
+	}
+\end{lstlisting}
+A supertype can be declared after a subtypes have been implemented. 
+Generalisation does not match well with inheritance: A Subclass-to-be already has a superclass.
+
+%\subsection{Structural Subtyping and Substitution}
+%Subtype objects can \emph{understand at least the messages} that supertype objects can understand:
+%\begin{itemize}
+%	\item Method calls
+%	\item Field accesses
+%\end{itemize}
+%Structural subtypes have \emph{by definition wider interfaces} then their supertypes.
+
+\subsection{Reuse: Structural Subtyping}
+Subtype objects can \emph{understand at least the messages} that supertype objects can understand:
+\begin{itemize}
+	\item Method calls
+	\item Field accesses
+\end{itemize}
+Structural subtypes have \emph{by definition wider interfaces} then their supertypes.
+
+All types are "automatically" subtypes of types with smaller interfaces. No support for inheritance (like generalization). 
+\begin{lstlisting}[caption=Structural Subtyping Example]
+interface Person {
+	String 	getName();
+	Data	dateOfBirth();
+}
+
+class Resident {
+	String 	getName()		{...}
+	Data	dateOfBirth()	{...}
+	...
+}	
+
+class Employee {
+	String 	getName()		{...}
+	Data	dateOfBirth()	{...}
+	...
+}
+
+\end{lstlisting}
+Person is a supertype of Resident and Employee.
+
+
 
