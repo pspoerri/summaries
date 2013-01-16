@@ -213,6 +213,8 @@ Which leaves us with \emph{Euler' Method}.
 	\item[Efficiency] Is a given method a good choice for a given problem?
 \end{description}
 
+\subsection{Integration Schemes}
+
 \subsubsection{Euler's Method} Start at the initial condition and take a step into the direction of the tangent.
 \begin{align*}
 	y_{n+1} &= y_n + hf(t_n, y_n).
@@ -270,6 +272,154 @@ $y_{n+1}$ is computed using a weighted average slope:
 	\includegraphics[width=0.45\textwidth]{img/01_rk4}
 	\caption{RK4 graphically}
 \end{figure}
+
+\subsubsection{Implicit Euler Method}
+
+\begin{align*}
+	y_{n+1} &= y_n + hf(t_{n+1}, y_{n+1})
+\end{align*}
+Implicit methods have to be solved iteratively. Example with Newton's method:
+\begin{enumerate}
+	\item \textbf{Rewrite equation}:
+	
+		\begin{align*}
+			0 = y_{n+1} - y_n - hf(t_{n+1}, y_{n+1}) = g(y_{n+1})
+		\end{align*}
+	\item \textbf{Make initial guess}:
+		\begin{align*}
+			\tilde y_{n+1} = y_n
+		\end{align*}
+	\item \textbf{Taylor expansion}:
+	
+		\begin{align*}
+			g(\tilde y_{n+1}+\Delta y) = g(\tilde y_{n+1}) + g'(\tilde y_{n+1}) + \bigO{\Delta y^2} = 0
+		\end{align*}
+		
+	\item \textbf{Linearize}
+	
+		\begin{align*}
+			g'(\tilde y_{n+1} \cdot \Delta y = -g(\tilde y_{n+1})
+		\end{align*}
+\end{enumerate}
+In order to solve the equation one has to iterate over
+\begin{align*}
+	\Delta y &=	-{g(\tilde y_{n+1}) \over g'(\tilde y_{n+1}) } & \text{Solve},\\
+	\tilde y_{n+1} &= \tilde y_{n+1} + \Delta y &\text{Update},\\
+	r &= g(\tilde y_{n+1}) &\text{Error},
+\end{align*}
+until the \emph{Error} is small enough.\\
+
+Newton's method is powerful, but it has to be used with care:
+\begin{itemize}
+	\item Requires the computation of the solution of a linear system in each iteration.
+	\item A robust implementation needs advanced strategies.
+\end{itemize}
+
+\subsubsection{Semi-Implicit Euler Method}
+The \emph{semi-implicit} Euler method can be applied to a pair of \emph{differential equations} of the form:
+\begin{align*}
+	{dx \over dt} &= f(t,v)\\
+	{dv \over dt} &= g(t,x)
+\end{align*}
+The discrete solution can be computed by iterating over:
+\begin{align*}
+	v_{n+1} &= v_n + g(t_n, x_n)\Delta t\\
+	x_{n+1} &= x_n + f(t_n, v_{n+1})\Delta t
+\end{align*}
+
+\subsection{Higher-Order Numerical Integration}
+Let 
+\begin{align*}
+	M\ddot x = F^{int} + F^{ext}
+\end{align*}
+\subsubsection{Verlet Integration}
+Combine forward and backward expansions of $x(t)$. Which results in a $\mathbf{2^{nd}}$ \textbf{order method}.
+
+\begin{align*}
+	&\  \ \begin{cases}
+	x(t+h) &=  x(t) + hx'(t) + {h^2\over 2}a(t) + {h^6 \over 6} x'''\\ 
+	x(t+h) &=  x(t) - hx'(t) + {h^2\over 2}a(t) / {h^6 \over 6} x'''
+	\end{cases}\\
+	&x(t+h) = 2 x(t) - x(t-h) + h^2a(t) 
+\end{align*}
+
+\begin{itemize}
+	\item The two-step method makes it problematic for discontinuities.
+	\item \emph{Velocities} have to be \emph{approximated a posteriori}.
+\end{itemize}
+
+
+\subsubsection{Leapfrog}
+Compute velocities on a \emph{staggered grid}. $\mathbf{2^{nd}}$ \textbf{order method}.
+\begin{align*}
+	v\left(t+{h \over 2}\right) &= v \left(t - {h\over 2}\right) + h\cdot a(t)\\
+	x(t+h) &= x(t) + h\cdot v\left( t + {h\over 2} \right)
+\end{align*}
+This method is only applicable if $a(t)$ does not depend on velocity: $\implies$ no damping!
+
+\subsubsection{Symplectic Euler}
+$\mathbf{2^{nd}}$ \textbf{order accurate}
+\begin{align*}
+	v(t+h) &= v(t) + h\cdot a(t)\\
+	x(t+h) &= x(t) + h\cdot v(t+h)
+\end{align*}
+
+Has a good stability for oscillatory motion and good conservation properties:
+\begin{itemize}
+	\item Exactly conserves momentum
+	\item Nearly conserves energy over long run times.
+\end{itemize}
+
+\section{A Basic Mass-Spring System}
+\subsection{Setting up Springs}
+Is the model provided as tetrahedral mesh?
+\begin{description}
+	\item[Yes:] Model edges as springs
+	\item[No:] Find \emph{stable} topology:
+		\begin{itemize}
+			\item No control over material properties
+			\item No explicit volume preservation.
+		\end{itemize}
+\end{description}
+
+\paragraph{Springs for Cloth} Types of require springs:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{img/02_springs_cloth}
+	\includegraphics[width=0.45\textwidth]{img/02_springs_cloth_2}
+\end{figure}
+Springs couple different deformation modes:
+\begin{itemize}
+	\item Bending and shear springs respond to stretch,
+	\item Which lead to uncontrollable transverse contraction.
+\end{itemize}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{img/02_contraction}
+	\caption{Transverse Contraction due to bending and shear springs}
+\end{figure}
+
+The material behaviour depends strongly on topology.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{img/02_material_behaviour}
+	\caption{Material behaviour}
+\end{figure}
+
+\paragraph{Limitations}
+\begin{itemize}
+	\item Strong dependence on discretization (topology)
+	\item Limited control over material behaviour
+	\item No (explicit) volum preservation (for solids)
+\end{itemize}
+
+\paragraph{Verdict} Mass-Spring Systems are simple and efficient, but not very accurate.
+\paragraph{Alternatives}
+\begin{itemize}
+	\item Constraints
+	\item Continuum-mechanics with Finite Elements
+\end{itemize}
+
 
 
 \end{multicols}
