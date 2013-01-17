@@ -122,6 +122,234 @@ Generally there are (infinitely) many $u$ which solve a PDE. So there's addition
 	\includegraphics[width=0.45\textwidth]{img/03_boundary_conditions}
 \end{figure}
 
+\section{Solving Poisson's Equation Numerically}
+\subsection{Poisson's Equation}
+\begin{align*}
+	-\Delta u(x,y) = f(x,y)
+\end{align*}
+
+The poisson equation is the same as Laplace Equation if $f(x,y) = 0$. The $2D$ Laplace operator:
+\begin{align*}
+	\Delta u(x,y) := {\partial^2 \over \partial x^2} u(x,y) + {\partial^2 \over \partial y^2} u(x,y)
+\end{align*}
+
+Poisson's equation has practical relevance:
+\begin{itemize}
+	\item \emph{Thin membrane} clamped at boundary (drum):
+	
+		$f(x,y)$ applies forces, $u(x,y)$ vertical displacement.
+	\item \emph{Electrical potential} due to charge distribution:
+		
+		$f(x,y)$ charge distribution, $u(x,y)$ electric potential field.
+		
+	\item Steady state \emph{heat distribution}:
+	
+		$f(x,y)$ heat sources, $u(x,y)$ heat distribution.
+\end{itemize}
+
+\subsection{Finite Difference Solution}
+Consider the 1D problem:
+\begin{align*}
+-u_{xx}(x) &= f(x) & x\in \Omega=(0,1)\\
+u(0) &= 0\\
+u(1) &= 0
+\end{align*}
+
+Use a regular grid to discretize $\Omega$:
+\begin{align*}
+	u[i] &= u(i\cdot h) &i \in (0, \ldots, n).
+\end{align*}
+Approximate derivatives with finite differences:
+\begin{align*}
+	u_{xx} = {u_x[i]-u_x[i-1] \over h} =  {u[i+1]-2u[i]+u[i-1] \over h}.
+\end{align*}
+Which gives us an equation for every grid point $i=2,\ldots, n-1$:
+\begin{align*}
+	h^2f[i] = u[i+1]-2u[i]+u[i+1]
+\end{align*}
+
+
+\paragraph{2D Finite Differences stencil}
+\begin{align*}
+	\Delta_h u[i,j] = {u[i+1,j] + u[i-1,j] + u[i, j-1] + u[i,j+1] - 4u[i,j] \over h^2}
+\end{align*}
+
+
+\paragraph{Problems and Drawbacks} Finite differences
+\begin{itemize}
+	\item Are easy to understand and implement
+	\item require a regular grid
+	\item high smoothness requirements on solution
+	\item higher order derivatives require large stencils
+\end{itemize}
+
+
+\subsection{Finite Elements Solution}
+Consider the 1D problem:
+\begin{align*}
+-u_{xx}(x) &= f(x) & x\in \Omega=(0,1)\\
+u(0) &= 0\\
+u(1) &= 0
+\end{align*}
+
+Assum the PDE is satisfied point wise then
+\begin{align*}
+	-\int_\Omega u_{xx} (x) dx = \int_\Omega f(x) dx,
+\end{align*}
+and also
+\begin{align*}
+	-\int_\Omega u_{xx} (x)\cdot v(x) dx = \int_\Omega f(x)\cdot v(x) dx
+\end{align*}
+where $v(x)$ is a testing function. For arbitrary smooth functions $v: \Omega \rightarrow \R$.
+
+\paragraph{Weak Form} can be computed by using integration by parts:
+\begin{align*}
+	\int_a^b f'\cdot g = [f\cdot g]_a^b - \int_a^b f\cdot g'.
+\end{align*}
+
+\begin{align*}
+	-\int_\Omega u_{xx} \cdot v dx &= \int_\Omega f \cdot v dx,\\
+	\int_\Omega u_x \cdot v_x dx &= \int_\Omega f\cdot v + [u_x\cdot v]_0^1,\\
+&\text{with } v(0) = v(1) = 0,
+\end{align*}
+we get the weak form:
+\begin{align*}
+	\int_\Omega u_x\cdot v_x dx = \int_\Omega f\cdot v dx.
+\end{align*}
+The \emph{order of the highest derivatives has decreased by one}. This function is called the \emph{weak form} since it imposes \emph{weaker} continuity requirements on the solution. The \emph{weak and strong forms are equivalent}.
+
+\subsubsection{FEM-Template Process}
+\begin{enumerate}
+	\item Weak formulation
+	\item Ritz-Galerkin approach
+	\item Choice of Function Space 
+	\item Geometric Decomposition of Domain
+	\item Setup Matrix Equations
+	\item Solve Linear System
+\end{enumerate}
+
+\subsubsection{Ritz-Galkerin Approach}
+So far, $u(x)$ and $f(x)$ were continuous functions. We choose a finite-dimensional subspace for $u(x)$ and $f(x)$ and solve the projected problem (i.e. the weak form). 
+
+We discretize $u$ and $v$ on $n$-dimensional space:
+\begin{itemize}
+	\item Sample with nodal positions $x_i$
+	\item Nodal coefficients $u_i$
+	\item Basis functions $N_i$
+\end{itemize}
+and get:
+\begin{align*}
+u(x) = \sum_i u_i N_i(x)
+\end{align*}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{img/03_galerkin_sampling}
+\end{figure}
+
+
+We observe that:
+\begin{align*}
+u(x) = \sum_i u_i N_i(x) \ \implies \ {\partial \over \partial x} u(x) = \sum_{i=1}^n  u_i  {\partial \over \partial x} N_i(x).
+\end{align*}
+Insert everything into the weak formulation:
+\begin{align*}
+	&\int_\Omega u_x v_x\ dx = \int_\Omega fv\ dx\\
+	&\quad \int_\Omega \sum_{i=1}^n u_i {\partial N_i \over \partial x} \cdot \sum_{j=1}^n v_j {\partial N_j \over \partial x} dx - \int_\Omega f \cdot \sum_{j=1}^n v_j N_j(x)\ dx = 0
+\end{align*}
+Transform it:
+\begin{align*}
+	&\int_\Omega \sum_{i=1}^n u_i {\partial N_i \over \partial x} \cdot \sum_{j=1}^n v_j {\partial N_j \over \partial x} dx - \int_\Omega f \cdot \sum_{j=1}^n v_j N_j(x)\ dx = 0,\\
+	&\sum_{j=1}^n v_j \left[\sum_{i=1}^n u_i \int_\Omega {\partial N_i \over \partial x} \cdot {\partial N_j \over \partial x} dx - \int_\Omega f \cdot N_j(x)\ dx \right] = 0.
+\end{align*}
+And we get $n$ linear equations for $n$ unknowns:
+\begin{align*}
+&\sum_{i=1}^n u_i \int_\Omega {\partial N_i \over \partial x} \cdot {\partial N_j \over \partial x} dx - \int_\Omega f \cdot N_j(x)\ dx = 0 &\forall i=1,\ldots, n
+\end{align*}
+Which can be written as a linear system $\mathbf{Ku} = \mathbf{f}$:
+\begin{align*}
+\underbrace{
+\begin{pmatrix}
+K_{11} & \cdots & K_{1n}\\
+\vdots & \ddots & \vdots\\
+K_{n1} & \cdots & K_{nn}
+\end{pmatrix}}_\mathbf{K} \cdot  
+\underbrace{
+\begin{pmatrix}
+u_1\\ \vdots \\ u_n
+\end{pmatrix}
+}_\mathbf{u}
+= 
+\underbrace{
+\begin{pmatrix}
+f_1\\ \vdots \\ f_n
+\end{pmatrix}
+}_\mathbf{f},
+\end{align*}
+where
+\begin{align*}
+	K_{ij} &= \int_\Omega {\partial N_i \over \partial x} {\partial N_j \over \partial x} dx,\\
+	f_i &= \int_\Omega f\ N_i(x)dx.
+\end{align*}
+
+This matrix is
+\begin{itemize}
+	\item Symmetric
+	\item Positive definite (elliptic PDE)
+	\item Sparse (if $N_i$ has compact support)
+\end{itemize}
+
+
+\subsubsection{Choice of the Function Space}
+Problem: What basis functions should be used in $u(x) = \sum_i u_i N_i(x)$?\\
+Use piecewise linear basis functions. Basis functions are uniquely defined through \emph{Geometry} and interpolation requirement $N_i(x_j) = \delta_{ij}$.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{img/03_elements}
+	\caption{Simplical Elements}
+\end{figure}
+
+\paragraph{Triangle basis} $\text{}$
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{img/03_triangle_basis}
+\end{figure}
+Basis functions: 
+\begin{align*}
+	N_i(x,y) = a_ix + b_iy + c.
+\end{align*}
+Due to $N_i(x_j) = \delta_{ij}$, we have:
+\begin{align*}
+	\begin{pmatrix}
+		x_1 & y_1 & 1\\
+		x_2 & y_2 & 1\\
+		x_3 & y_3 & 1
+	\end{pmatrix} \cdot
+	\begin{pmatrix}
+	a_i \\ b_i \\ c_i
+	\end{pmatrix}
+	= 
+	\begin{pmatrix}
+		\delta_{1i}\\
+		\delta_{2i}\\
+		\delta_{3i}
+	\end{pmatrix}.
+\end{align*}
+
+\subsection{Finite Elements}
+A finite element is a triple consisting of 
+\begin{itemize}
+	\item A closed subset $\Omega_e \subset \R^d$ (in $d$ dimensions)
+	\item A set of $n$ basis functions: $N_i: \Omega_e \rightarrow \R$
+	\item A set of $n$ associated nodal variables $x_i$.
+\end{itemize}
+In order to solve a PDE we need to know on how to tessellate a domain into elements:
+\begin{itemize}
+	\item 2D: Delaunay triangulator
+	\item 3D: Tetrahedral mesher
+\end{itemize}
+
+
 
 
 
