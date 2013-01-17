@@ -349,6 +349,56 @@ In order to solve a PDE we need to know on how to tessellate a domain into eleme
 	\item 3D: Tetrahedral mesher
 \end{itemize}
 
+\subsubsection{Integrating Basis Functions}
+Goal: Evaluate $\mathbf f$
+\begin{align*}
+	f_i = \int_\Omega fN_idxdy
+\end{align*}
+$N_i$ extends over all $n_{e,i}$ elements incident to $x_i$. $N_i$ is zero outside of $\Omega_i \subset \Omega$. Evaluate integral over $\Omega_e$ with \emph{quadrature rule}:
+\begin{align*}
+	\int_{\Omega^e} f\ N_i^e\ dxdy &\approx f(x_q, y_q)\cdot N_i^e(x_q, y_q)\cdot A_e\\
+	A_e:&\ \text{ Area of element } e\\
+	(x_q, y_q):&\ \text{ single quadrature point at bary-center}
+\end{align*}
+
+Goal: Evaluate $\mathbf K$
+\begin{align*}
+	K_{ij} &= \int_\Omega {\partial N_i \over \partial x} {\partial N_j \over \partial x} + {\partial N_i \over \partial y} {\partial N_j \over \partial y} dx dy
+\end{align*}
+Observe that $K_{ij} \neq 0 \leftrightarrow \exists \Omega^e$ such that $\int_\Omega^e N_i^e N_j^e dxdy > 0$. Let $S_{ij}$ denote set of all these elements, then:
+\begin{align*}
+	K_{ij} &= \sum_{e \in S_{ij}} \int_\Omega {\partial N_i^e \over \partial x} {\partial N_j^e \over \partial x} 
+	+ {\partial N_i^e \over \partial y} {\partial N_j^e \over \partial y} dx dy
+\end{align*}
+This allows for a element-centered implementation: For each element $e$:
+\begin{itemize}
+	\item Compute basis function derivatives: 
+		\begin{align*}
+			&{\partial N_l^e \over \partial x}&l=1,\ldots, 3
+		\end{align*}
+	\item Form products and integrate:
+		\begin{align*}
+			&{\partial N_l^e \over \partial x}{\partial N_k^e \over \partial x}&l=1,\ldots, 3\ k=1,\ldots, 3
+		\end{align*}
+	\item Add to global matrix:
+		\begin{align*}
+		K_{ij} +=  A_e \left( {\partial N_i^e \over \partial x} {\partial N_j^e \over \partial x} 
+	+ {\partial N_i^e \over \partial y} {\partial N_j^e \over \partial y} \right)		\end{align*}
+\end{itemize}
+
+\subsubsection{Advantages of Finite Elements}
+FEM $\{\ldots\}$
+\begin{itemize}
+	\item can easily deal with complex geometries,
+	\item solution in nodes is naturally interpolated inside elements using basis functions
+	\item weaker smoothness requirements on solution
+	\item weak form is natural for many applications
+	\item $\ldots$
+\end{itemize}
+
+
+
+
 
 
 
