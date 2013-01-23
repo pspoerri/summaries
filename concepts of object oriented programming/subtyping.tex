@@ -294,7 +294,7 @@ class EmployeeAdapter implements Person {
 \end{lstlisting}
 
 \subsection{Generalisation}
-Most OO-languages support specialisation of superclasses (top-down development). Some research languages also suppoert \emph{generalisation} (bottom-up development).
+Most OO-languages support specialisation of superclasses (top-down development). Some research languages also support \emph{generalisation} (bottom-up development).
 \begin{lstlisting}
 	interface Person generalizes Resident, Employee {
 		String	getName();
@@ -340,7 +340,44 @@ class Employee {
 }
 
 \end{lstlisting}
-Person is a supertype of Resident and Employee.
+Person is a supertype of Resident and Employee. We observe that generalisation doesn't match well with inheritance.
+
+
+
+\subsection{Shortcomings}
+Nominal subtyping can impede code reuse. Consider these two library classes:
+\begin{lstlisting}
+class Resident {
+	String	getName()		{ ... }
+	Date	dateOfBirth()	{ ... }
+	Address	getAddress()	{ ... }
+}
+
+class Employee {
+	String	getName()		{ ... }
+	Date	dateOfBirth()	{ ... }
+	int		getSalary()		{ ... }
+}
+\end{lstlisting}
+Now we would like to store Resident and Employee-objects in a collection of type Person[]. Neither Resident nor Employee is a subtype of Person. So we implement and Adapter:
+\begin{itemize}
+	\item Subtype of Person
+	\item Delegate calls to adaptee (Resident or Employee)
+\end{itemize}
+\begin{lstlisting}
+interface Person {
+	String	getName()		{ ... }
+	Date	dateOfBirth()	{ ... }
+}
+class EmployeeAdapter implements Person {
+	private	Employee	adaptee;	String 	getName() {
+		return adaptee.getName(); 
+	} 
+	Data 	dateOfBirth() { 
+		return adaptee.dateOfBirth(); 
+	}}
+\end{lstlisting}
+The adapter requires boilerplate code and causes memory and run-time overhead. The adapter works also if Person is reused.
 
 
 
