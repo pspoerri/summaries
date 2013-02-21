@@ -393,9 +393,9 @@ Why use an OO-language when we can describe a program in an imperative language?
 
 \paragraph{Pros} We can express \emph{objects}, \emph{fields}, \emph{methods}, \emph{constructors}, and \emph{dynamic method binding} by imitating OO-programming. The union in Person and the switch statement in \lstinline{printAll} (previous example) became dispensable.
 The behavior of reused code (\lstinline{Person}, \lstinline{printAll}) can be \emph{adapted} to introduce Student \emph{without changing the implementation}.
-\paragraph{Cons} Inheritance has to be replace by \emph{code duplication}. Subtyping can be simulated, but it requires:
+\paragraph{Cons} Inheritance has to be replaced by \emph{code duplication}. Subtyping can be simulated, but it requires:
 \begin{itemize}
- \item Casts, which is \emph{not type safe}
+ \item Casts, which are \emph{not type safe}
  \item \emph{Same memory layout} of super and subclasses (same fields and function pointers in same order), which is \emph{extremely error-prone}.
 \end{itemize}
 Appropriate language support is needed to apply object-oriented concepts.
