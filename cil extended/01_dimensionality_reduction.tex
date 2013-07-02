@@ -1,0 +1,199 @@
+\part{Dimensionality Reduction}
+Select the \emph{most interesting} dimensions. 
+
+\section{Intrinsic Dimensionality}
+\subsection*{Pairwise Distances}
+Assume components of data $x=(x_1,\ldots,x_D)^T \in \R^D$ are i.i.d. Gaussian distributed:
+\begin{align*}
+    x_d \sim \normal(0,1) \implies x_d - y_d \sim \normal(0,2).
+\end{align*}
+Using $\chi^2$-distribution:
+\begin{align*}
+    {1\over 2}(x_d-y_d)^2 \sim \chi^2(1),
+\end{align*}
+and extending to $D$ dimensions:
+\begin{align*}
+    {1\over 2} \sum_{d=1}^D (x_d-y_d)^2 \sim \chi^2(D) = \Gamma\left( {D\over 2}, 2\right)\\
+    \text{Recall: } \forall z,k, \theta > 0,\ \Gamma(z;k,\theta) = {\theta^k\over \Gamma(k)} y^{k-1} e^{-\theta z} 
+\end{align*}
+Hence, the dimension-normalised squared distance is:
+\begin{align*}
+    {1\over D} \sum_{d=1}^D (x_d-y_d)^2 \sim \Gamma\left({D\over 2}, {4\over D}\right)
+\end{align*}
+is Gamma distributed with mean $2$ and variance ${8 \over D}$. 
+
+$\Gamma\left({D\over 2}, {4\over D}\right)$  tends towards normality with shrinking width for large $D$. Therefore, most points have \emph{constant} pairwise distances in this limit.
+
+\section{Principal Component Analysis}
+Objectives of PCA:
+\begin{enumerate}
+\item Minimise error $\norm{x_n-\tilde{x}_n}$ of point $x_n$ and its approximation $\tilde x_n$.
+\item Reveal "interesting" information: maximise \emph{variance}.
+\end{enumerate}
+Both objectives are show to be formally equivalent.
+
+Consider a set of observations $\{x_n\},\ n=1, \ldots, N$ and $x_n \in \R^D$.
+\begin{description}
+\item[Goal] Project data onto $K<D$ dimensional space while maximising variance of the projected data.
+\item[For $\mathbf{K=1}$]  Define direction of projection as $u_1$. Set $\norm{u_1}_2 =1$ (only the direction of the projection is important.
+\end{description}
+\subsection{Statistics of Projected Data}
+\paragraph{Original Data}
+\begin{description}
+\item[Mean] is given by the sample mean $\bar x$.
+\item[Covariance] of the Data:
+\begin{align*}
+    \Sigma   = {1\over N} \sum_{n=1}^N (x_n - \bar x)(x_n - \bar x)^T
+\end{align*}
+\end{description}
+\paragraph{Projected Data}
+\begin{description}
+\item[Mean] is given by: $u_1^T\bar x$.
+\item[Variance] is given by:
+\begin{align*}
+    {1\over N} \sum_{n=1}^N \left\{ u_1^T x_n-u_1^T \bar x\right\}^2 
+        &= {1\over N} \sum_{n=1}^N \left\{u_1^T (x_n-\bar x)\right\}^2\\
+        &= {1\over N} \sum_{n=1}^N u_1^T (x_n - \bar x)(x_n-\bar x)^T u_1\\
+        &= u_1^T \Sigma u_1.
+\end{align*}
+\end{description}
+
+\subsection{Maximisation Problem}
+These statistics now can be fed into a maximisation problem:
+\begin{align*}
+    \max_{u_1}\ u_1^T \Sigma u_1
+\end{align*}
+such that $\norm{u_1}_2 = 1$.
+
+Writing the Lagrangian results in in:
+\begin{align*}
+    \mathcal L:= u_1^T \Sigma u_1 + \lambda_1(1-u_1^Tu_1). 
+\end{align*}
+Setting ${\delta \over \delta u_1}\mathcal L \overset{!}{=} 0$ results in:
+\begin{align*}
+    \Sigma u_1 = \lambda_1 u_1
+\end{align*}
+
+We observe that $u_1$ is an \emph{eigenvector} of $\Sigma$ and $\lambda_1$ it's associated \emph{eigenvalue}. Furthermore $\lambda_1$ is also the variance of the projected data:
+\begin{align*}
+    \lambda_1 = u_1^T \Sigma u_1
+\end{align*}
+\subsubsection{Second principal direction}
+The second principal direction can be obtained by maximising the variance $u_2^T \Sigma u_2$, subject to $\norm{u_2}_2 = 1$ and $u_2^Tu_1 = 0$:
+\begin{align*}
+    \mathcal L = u_2^T \Sigma u_2 + \lambda_2\left( 1- u_2^Tu_2\right) +\nu \left(u_2^Tu_1\right).
+\end{align*}
+The maximum i found by setting ${\delta \mathcal L \over \delta u_2} \overset{!}{=} 0$:
+\begin{align*}
+    2\Sigma u_2 - 2\lambda_2 u_2+\nu u_1 = 0.
+\end{align*}
+Because of the orthogonality between $u_2$ and $u_1$ we observe that $u_2$ contains no component of $u_1$ and hence $\nu = 0$. We get:
+\begin{align*}
+    \Sigma u_2 = \lambda_2 u_2.
+\end{align*}
+We observe that $u_2$ is an eigenvector of $\Sigma$ with the second largest eigenvalue of $\lambda_2$.
+\subsection{Solution: Eigenvalue Decomposition}
+Hence we see that the eigenvalue decomposition of the covariance matrix
+\begin{align*}
+    \Sigma = U\Lambda U^T
+\end{align*}
+contains all relevant information. 
+
+For a projection space of size $K\leq D$ we choose the $K$ eigenvectors $\{u_1,\ldots, u_k\}$ with the largest associated eigenvalues $\{\lambda_1, \ldots,\lambda_2\}$.
+
+\subsection{Error Formulation}
+We define an \emph{orthonormal} basis $\{u_d\}$, $d=1,\ldots, D$ of $\R^D$. The scalar projection of $x_n$ onto $u_d$ (magnitude) is given by:
+\begin{align*}
+    z_{n,d} = x_n^Tu_d.
+\end{align*}
+The associated projection onto $u_d$ amounts to $z_{n,d}u_d$. Therefore, each data point can be represented in the basis by:
+\begin{align*}
+    x_n = \sum_{d=1}^D z_{n,d}u_d=\sum_{d=1}^D\left(x_n^Tu_d\right) u_d.
+\end{align*}
+
+\emph{Restricted representation} using $K<D$ basis vectors can be written as:
+\begin{align*}
+\tilde x_n = \sum_{d=1}^K a_{n,d}u_d + \sum_{d=K+1}^D b_d u_d,
+\end{align*}
+where $b_d$ does not depend on the data point $x_n$.
+
+The approximation error can be represented by:
+\begin{align*}
+ J(\{a_{n,d}\}, \{ b_d\}) &= {1\over N} \sum_{n=1}^N \norm{x_n-\tilde x_n}_2^2\\
+\text{Minimisation of $J$ w.r.t.} a_{n,d} &= x_n^T\\
+\text{Minimisation of $J$ w.r.t.} b_d &= \bar x^T u_d
+\end{align*}
+The displacement can be obtained by resubsittuing $a_{n,d}$ and $b_d$:
+\begin{align*}
+x_n - \tilde x_n = \sum_{d=K+1}^D \left\{\left(x_n-\bar x\right)^Tu_d\right\}u_d.
+\end{align*}
+We observe that the displacement vector is orthogonal to the principal space!
+
+Resubstituting the displacement into the error criterion leads to:
+\begin{align*}
+    J= {1\over N} \sum_{n=1}^N \sum_{d=K+1}^D \left(x_n^T u_d - \bar x^T u_d\right)^2 = \sum_{d=K+1}^D u_d^T \Sigma u_d
+\end{align*}
+
+\subsection{Matrix viewpoint}
+The data can be represented as matrix:
+\begin{align*}
+    X= [x_1,\ldots, x_n,\ldots, x_N]
+\end{align*}
+The corresponding zero-centered data is:
+\begin{align*}
+    \bar X = X-M,
+\end{align*}
+where $M=\underbrace{[\bar x, \ldots, \bar x]}_{N\ \text{times}}$.
+
+Compute the projection of $\bar X$ on $U_k = [u_1,\ldots, u_K]$  with:
+\begin{align*}
+    \underbrace{\bar Z_K}_{K\times N} = 
+        \underbrace{U_K^T}_{K\times D} \cdot \underbrace{\bar X}_{D \times N}.
+\end{align*}
+
+To approximate $\bar X$, we return to the original basis:
+\begin{align*}
+    \tilde{\bar X} = U_K\cdot \bar Z_K.
+\end{align*}
+
+For $K=D$  we obtain a perfect reconstruction.
+
+\subsection{Computation}
+First compute the \emph{empirical mean}:
+\begin{align*}
+\bar x = {1\over N} \sum_{n=1}^N x_n
+\end{align*}
+Then \emph{center the data} by subtracting the mean from each sample:
+\begin{align*}
+\bar X = X-M,
+\end{align*}
+where $M=\underbrace{[\bar x, \ldots, \bar x]}_{N\ \text{times}}$.
+Now compute the \emph{Covariance matrix}:
+\begin{align*}
+\Sigma = {1\over N} \sum_{n=1}^N (x_n-\bar x)(x_n-\bar x)^T = {1\over N} \underbrace{\bar X\bar X^T}_{\text{Scatter Matrix }\mathbf S}.
+\end{align*}
+$\Sigma$ is \emph{symmetric}. 
+
+Now the \emph{Eigenvalue decomposition} can be computed:
+\begin{align*}
+\Sigma = U\Lambda U^T,
+\end{align*}
+where $\Lambda = diag[\lambda_1, \ldots, \lambda_D]$, such that $\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_D$ with orthonormal eigenvectors.
+
+\begin{description}
+\item[Transformation] the data can be transformed on to the new basis of $K$ dimensions:
+\begin{align*}
+    \tilde{\bar Z} = U_K^T \bar X,
+\end{align*}
+$\bar Z \in \R^{K\times N}$: We obtain a dimension reduction of the data.
+\item[Reconstruction] Go back to the original basis by computing
+\begin{align*}
+    \tilde{\bar X} &= U_K \bar Z\\
+    \tilde X &= \tilde{\bar X}+M
+\end{align*}
+
+
+\end{description}
+
+
+
