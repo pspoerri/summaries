@@ -1,0 +1,75 @@
+\newpage
+\appendix
+ 
+\part{Appendix}
+\section{Matrix Definitions and Theorems}
+\subsection{Norms}
+A \emph{norm} is a function $\norm{\circ}: V \mapsto \R$ quantifying the size of a vector. It must satisfy
+\begin{itemize}
+    \item \emph{Positive scalability:}
+    \begin{align*}
+        \norm{a\cdot x} &= |a|\cdot \norm{x}.
+    \end{align*}
+    \item \emph{Triangle inequality}
+    \begin{align*}
+        \norm{x+y} \leq \norm{x} + \norm{y} \quad \forall x,y \in V.
+    \end{align*}
+    \item \emph{Separability}:
+    \begin{align*}
+        \norm{x} = 0 \ \implies \ x=0.
+    \end{align*}
+\end{itemize}
+\subsubsection{Vector norms}
+\begin{description}
+    \item[$\mathbf{p}$-norms] The most commonly used matrix norms are $p$-norms.
+        \begin{align*}
+            \norm{x}_p := \left(\sum_{i-1}^n |x_i|^p\right)^{1/p}
+        \end{align*}
+        for $p \in [1,\infty]$, where $|x_i|$ denotes the absolute value of coordinate $x_i$.
+        
+        A special case of the $p$ norm is the \emph{Eclidean norm}:
+        \begin{align*}
+            \norm{x}_2:= \sqrt{\sum_{i=1}^n x_i^2}.
+        \end{align*}
+    \item[$0$-norm] technically not really a norm is defined by:
+        \begin{align*}
+            \norm{x}_0 := \text{number of nonzero coordinates in $x$}.
+        \end{align*}
+\end{description}
+\subsubsection{Matrix norms}
+\begin{description}
+    \item[$p$-norm] for matrices:
+        \begin{align*}
+            \norm{X}_p := \max_{x\neq 0} {\norm{Ax}_p \over \norm{x}_p}.
+        \end{align*}
+        A special case is the Euclidean or \emph{spectral norm}:
+        \begin{align*}
+            \norm{X}_2 = \sigma_\text{max} (X),
+        \end{align*}
+        the largest singular value of $X$.
+    \item[Frobenius norm] is defined as:
+        \begin{align*}
+            \norm{X}_F := \sqrt{\sum_{i=1}^m \sum_{j=1}^n x_{ij}^2} = \sum_{i=1}^{\text{min}(m,n)} \sigma_i^2,
+        \end{align*}
+        where $\sigma_i$ are the singular values of $X$.
+        
+        
+\end{description}
+
+\subsection{Orthogonality}
+\begin{description}
+    \item[Orthogonal vectors] Two vectors in an inner product are orthogonal if their inner product is zero.
+    \item[Orthonormal vectors] Orthogonal vectors that have unit length 1
+    \item[Orthogonal matrix] An orthogonal matrix is a square matrix with real entries whose columns and rows are orthogonal unit vectors (i.e. orthonormal vectors).
+    For orthogonal matrices it also holds that
+    \begin{align*}
+        A^T A= I \quad \implies \quad A^T = A^{-1}\ &\text{since,}\\
+        (A^TA)_{i,j} &= a_i^Ta_j = 
+            \begin{cases}
+                1&i=j\\
+                0&i\neq j
+            \end{cases}
+    \end{align*}
+
+\end{description}
+
