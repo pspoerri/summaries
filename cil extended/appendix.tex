@@ -73,3 +73,115 @@ A \emph{norm} is a function $\norm{\circ}: V \mapsto \R$ quantifying the size of
 
 \end{description}
 
+\section{Occam's Razor}
+\begin{quotation}
+Entities must not be multiplied beyond necessity.\end{quotation}
+ It states that among competing hypotheses, the hypothesis with the fewest assumptions should be selected. It is often understood as 'the simplest explanation is usually the correct one', although this is potentially misleading.
+The application of the principle often shifts the burden of proof in a discussion.[a] The razor states that one should proceed to simpler theories until simplicity can be traded for greater explanatory power. The simplest available theory need not be most accurate. Philosophers also point out that the exact meaning of simplest may be nuanced.\footnote{\url{http://en.wikipedia.org/wiki/Occam's_razor}}
+
+\section{Probability}
+We denote $\Omega$ the sample space and by $A$ an event, which is a subset of $\Omega$.
+\begin{description}
+\item[Probability distribution] A function $p$ that assigns a real number $p(A)$ to each event $A$ is a \emph{probability distribution} if it satisfies the following three axioms:
+    \begin{itemize}
+    \item $p(A) \geq 0$ for every $A$.
+    \item $p(\Omega) = 1$.
+    \item If $A_1$, $A_2$, $\ldots$ are disjoint then
+        \begin{align*}
+            p\left( \bigcup_{i=1}^\infty \right) = \sum_{i=1}^\infty p(A_i)
+        \end{align*}
+    \end{itemize}
+\item[Random Variable] A random variable is a mapping:
+    \begin{align*}
+        X\ :\ \Omega\ &\rightarrow \ \mathcal K\\
+        \omega\ &\mapsto \ X(\omega)
+    \end{align*}
+    that assigns an element $X(\omega) \in \mathcal K$ to each outcome $\omega$.
+    
+    Notation and types of random variables (sample spaces):
+    \begin{description}
+        \item[Notation]:
+            \begin{align*}
+                X &\quad \text{Random variable}\\
+                x &\quad \text{a value taken by the r.v. $X$.}
+            \end{align*}
+        \item[Discrete random variables]:
+            \begin{itemize}
+                \item Finite: e.g. $X\in \mathcal B \equiv \{0,1\}$ or $X\in \mathcal S_n$ (set of permutations)
+                \item Contably Infinite: e.g $X\in \N,\Z$ etc...
+            \end{itemize}
+        \item[Continous random variables]: e.g $X\in \R, [a,b]$ etc...
+
+    \end{description}
+\end{description}
+
+\subsection{Distributions}
+\subsubsection{Categorical distribution}
+
+\paragraph{Example}
+The sample space of throwing two dice is $\Omega = [1,\ldots,6]\times [1,\ldots, 6]$. We consider the two random variables $X_1+X_2$ given by summing up the numbers $x_1, x_2$ of the two dice. The random variable can thus take values in $[2,\ldots, 12]$. This leads to the following probabilites:
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{r|ccccc ccccc c}
+        Random variable &2&3&4&5&6&7&8&9&10&11&12\\\hline
+        Probability & ${1\over 36}$& ${2\over 36}$& ${3\over 36}$&  ${4\over 36}$& ${5\over 36}$&  ${6\over 36}$& ${5\over 36}$& ${4\over 36}$& ${3\over 36}$& ${2\over 36}$&  ${1\over 36}$
+    \end{tabular}
+\end{figure}
+The random variable $X_1+X_2$ is an example of the \emph{categorical distribution}: A discrete distribution over $K$ events. Each event has the probability $\pi_k$ of occurring.
+
+\paragraph{Definition}
+The categorical distribution is a discrete probability distribution whose sample space is the set of $1-$of$-K$ encoded random vectors $x$ of dimensions $K$ having the property:
+\begin{align*}
+    \sum_{k=1}^K z_k =1, \quad z_k \in \{0,1\}.
+\end{align*}
+The probability mass function is defined as
+\begin{align*}
+    p(z| \pi) = \prod_{k=1}^K \pi_k^{z_k},
+\end{align*}
+where $\pi_k$ represents the probability of seeing element $k$ ($\pi_k \geq 0$, $\sum_{k=1}^K \pi_k =1$).
+
+
+\subsubsection{Gaussian Distribution}
+The probability density function of the Gaussian distribution is given by:
+\begin{align*}
+    p(x|\mu, \sigma) &= \mathcal N(x|\mu, \sigma) = {1\over \sqrt{2\pi} \sigma} exp \left\{ - {(x-\mu)^2 \over 2\sigma^2 }\right\}\\
+    \mu &= \text{ mean of distribution}\\
+    \sigma^2 &= \text{ variance of distribution}.
+\end{align*}
+Probability for $X\in [a,b]$ is given by an integral:
+\begin{align*}
+    P(a<X<b) = \int_a^b p(x) dx = {1\over \sqrt{2\pi}\sigma} \int_a^b exp \left\{ - {(x-\mu)^2 \over 2\sigma^2 }\right\} dx.
+\end{align*}
+
+\subsubsection{Multivariate Gaussian Distribution}
+Generalises the univaraite Gaussian distribution to higher dimensions. The distribution samples the space $\mathcal X \subseteq \R^D$. A random vector $X=(X_1, \ldots, X_D)^T$ has a multivariate normal distribution if every linear combination of its components (i.e., $Y=a_1X_1+\ldots+ a_DX_D$) has a univariate normal distribution.
+
+\paragraph{Definition}:
+\begin{align*}
+    p(x|\mu\Sigma) = \mathcal N(x|\mu, \Sigma) := {1\over (\sqrt{2\pi})^D |\Sigma|^{1/2} } exp \left( -{1\over 2} (x-\mu)^T \Sigma^{-1} (x-\mu)\right)
+\end{align*}
+
+\subsubsection{Multidimensional Moment Statistics}
+\begin{description}
+\item[Expectation] Vector of component expectations:
+    \begin{align*}
+        \mathbb E[X] = \begin{pmatrix}
+                         \mathbb E[X_1]\\
+                         \vdots\\
+                         \mathbb E[X_D]
+                       \end{pmatrix}
+    \end{align*}
+\item[Variance] Generalised covariance:
+    \begin{align*}
+        Cov[X,Y] :&= \int_{\mathcal X}\int_{\mathcal Y} p(x,y)(x-\mu_X)(y-\mu_Y) dxdy \\ 
+        &=\mathbb E_{X,Y} [(x-\mu_X)(y-\mu_Y)]
+    \end{align*}
+\item[Covariance Matrix] For random variables $X_1, \ldots, X_D$ we record covariances in the covariance matrix $\Sigma$:
+    \begin{align*}
+        \Sigma_{i,j} := Cov[X_i,Y_i]\quad i,j \in \{1,\ldots, D\}.
+    \end{align*}
+    $\Sigma$ generalises the notion of variance to sets of random variables for multiple dimensions.
+
+\end{description}
+
+

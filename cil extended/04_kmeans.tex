@@ -1,0 +1,106 @@
+\section{$K$-Means}
+\subsection{Overview}
+
+The algorithm alternates between two steps:
+\begin{itemize}
+    \item \emph{Assigning data points} to clusters
+    Let $k^*(x_n)$ denote the cluster index with the minimal distance between a cluster centroid and the data point $x_n$:
+    \begin{align*}
+    k^*(x_n) &=\argmin_k \left\{ \norm{x_n-u_1}_2^2,\ldots, \norm{x_n-u_k}_2^2,\ldots,\norm{x_n-u_K}_2^2 \right\}
+    \end{align*}
+
+    \item \emph{Updating the cluster centroids} based on all the data points assigned to it. Compute the mean/centroid of a cluster that can be written as:
+    \begin{align*}
+        u_k = {\sum_{n=1}^N z_{k,n} x_n \over \sum_{n=1}^N z_{k,n} }\quad \forall k,\ \ k\in \{1,\ldots,K\}
+    \end{align*}
+\end{itemize}
+
+\subsection{Algorithm}
+\begin{enumerate}
+\item Initiate with a random choice of $u_1^{(0)}, \ldots, u_K^{(0)}$ (or let $u_1^{(0)}, \ldots, u_K^{(0)}$ equal data points from the set). Set $t=1$.
+\item \textbf{Cluster assignment.} Solve $\forall n$:
+    \begin{align*}
+        k^*(x_n) &=\argmin_k \left\{ \norm{x_n-u_1^{(t)}}_2^2,\ldots, \norm{x_n-u_K^{(t)}}_2^2 \right\}.
+    \end{align*}
+    Then, $z_{k*(x_n),n}^{(t)} = 1$ and $z_{j,n}^{(t)} =0\ \forall j\neq k,\ \ j=1,\ldots, K$.
+\item \textbf{Centroid update} 
+    \begin{align*}
+        u_k^{(t)} = {\sum_{n=1}^N z_{k,n}^{(t)} x_n \over \sum_{i=1}^N z_{k,n}^{(t)}}\ \forall k,\ k\in\{1,\ldots,K\}
+    \end{align*}
+\item Increment $t$. Repeat step $2$ until $\norm{u_k^{(t)}-u_k^{(t-1)}}_2^2 < \varepsilon\ \forall K$ ($0<\varepsilon << 1$) or until $t=t_\text{finish}$.  
+\end{enumerate}
+Aspects:
+\begin{itemize}
+    \item The computational cost of each iteration is $\bigO{KN}$.
+    \item Convergence is guaranteed
+    \item Optimises a \emph{non-convex} objective. Hence only a local minimum can be guaranteed.
+    \item Can be used to compress data: store only the centroids and the assignments of data point to clusters.
+\end{itemize}
+Problems:
+\begin{itemize}
+\item Non-convex objective, local minima and sensitive to initialisations.
+\item Not appropriate for non-Euclidean data $\mapsto$ need to use other distances.
+\item The optimal number of clusters $K$ is unknown: One has to find a balance between total compression $(K=1)$ and no loss of information $(K=N)$.
+\end{itemize}
+
+\subsection{Stability}
+\subsubsection{High-Level Stability test}
+The following is a high-level stability test for a given set of data points and a given number of clusters:
+\begin{enumerate}
+    \item Generate perturbed versions of the set for example by adding noise or drawing sub-samples.
+    \item Apply the clustering algorithm on all versions.
+    \item Compute pair-wise distances between all clusterings (using some distance measure).
+    \item Compute the \emph{instability} as the mean distance between all clusterings.
+\end{enumerate}
+Repeat this for different numbers of clusters and choose the one that minimises the instability.
+\subsubsection{Distance between Clusterings}
+For two clusterings $C$ and $C'$ that are defined on the same data points we compute the distance between clusterings $d$ in the following procedure:
+\begin{enumerate}
+    \item Compute the distances between the two clusterings by counting points on which the two clusterings agree or disagree.
+    \item Repeat over all permutations of the cluster labels (since the same cluster might be sometimes labeled $1$ and sometimes $2$ etc...).
+    \item Choose the permutation with minimal distance and the corresponding distances is $d$.
+\end{enumerate}
+In other words,
+\begin{align*}
+    d = \min_\pi \norm{Z-\pi(Z')}_0
+\end{align*}
+where $\pi(Z')$ is one of the possible row permutations of $Z'$ and $\norm{Z}_0$ denotes the cardinality of $Z$.
+If two clusterings are defined on different data sets but many points overlap, we use only these for comparison, otherwise, a mapping from one domain to the other is required.
+
+\subsubsection{Calculation of Stability}
+The rate of inconsistent data items $r$ is computed as follows"
+\begin{enumerate}
+    \item Cluster data sets $X$, $X'$ to infer assignments $Z$, $Z'$.
+    \item Train a classifier $\phi$ on $(X,Z)$ to transfer the clustering results $Z$ on $X$ to $X'$.
+    \item Apply $\phi$ on $X'$ and compare the optimally permuted output with $Z'$:
+    \begin{align*}
+        r:= {1\over N} \min_{\pi \in \mathbb S_K} \left\{ \sum_{i=1}^N \mathbb I_{\{ \pi(\phi(x_i'))\neq\hat z_i' \}}\right\}.
+    \end{align*}
+The indicator function $\mathbb I_{\{p\}}$ is $1$ if predicate $p$ is true, and $0$ otherwise.
+
+Minimisation of $\pi\in \mathbb S_K$ compensates for the permutation of the cluster numbers.
+\end{enumerate}
+The higher the number of clusters, the more difficult it is to have a small rate $r$ of inconsistent cluster assignments. Given $K$ clusters of equal size, a random assignment yields
+\begin{align*}
+    r_{rand} = {K-1\over K}.
+\end{align*}
+To be able to compare hypotheses with different $K$, relate $r$ to $r_{rand}$. The \emph{stability} is this defined as:
+\begin{align*}
+    stab := 1 - {r \over r_{rand}}.
+\end{align*}
+\begin{itemize}
+    \item $stab=1$: No inconsistent assignments
+    \item $stab=0$: Not better than a random assignment
+\end{itemize}
+
+\section{Clustering as Matrix Factorisation}
+SVD is a class matrix factorisation technique according to which every matrix matrix can be decomposed into $X=UDV^T$. With $U\in \R^{D\times D}$, $D\in \R^{D\times N}$ and $V\in \R^{N\times N}$.
+By setting $UD$ in the decomposition as $U$ and renaming $V^T$ to $Z$, we can write
+\begin{align*}
+    X= UZ.
+\end{align*}
+
+Approximating $X$ using the $K$ largest singular values we get a factorisation involving matrices of the same dimensionality as $K$-Means. 
+
+
+

@@ -58,4 +58,20 @@ Similarly the rows of $V^T$ (or columns of $V$) are the eigenvectors of $A^TA$ a
     A^TA = VDU^T UDV^T = VD^2V^T.
 \end{align*}
 
+\subsection{Movie Example}
+Let $A$ be a list of users with their respective movie preferences. Then the SVD decomposition
+\begin{align*}
+    A= UDV^T,
+\end{align*}
+can be interpreted in the following way:
+\begin{itemize}
+    \item $\mathbf{U}$: Users-to-concept affinity matrix.
+    \item $\mathbf{D}$: Expression level of the different concepts in the data.
+    \item $\mathbf{V}$: Movies-to-concept similarity matrix.
+\end{itemize}
 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/svd_movie}
+\end{figure}

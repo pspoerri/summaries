@@ -1,0 +1,51 @@
+\newpage
+\part{Clustering}
+
+\section{Introduction}
+A set of datapoints in a $d$-dimensional Euclidean space is given.
+\begin{description}
+    \item[Aim] The aim is to find a \emph{meaningful partition} of the data; i.e. label each data point with a unique value $\{1,\ldots, k\}$.
+    \item[Objective] The partition should group together similar data points, while the different groups/clusters should be as dissimilar as possible from each other.
+    \item This way we can uncover similarities between data points and give rise to data compression schemes.
+\end{description}
+
+
+\subsection{Problem}
+Consider $N$ data points in a $D$-dimensional space. Each data vector is denoted by $x_n$, $n=1,\ldots,N$. Our goal is to partition the data set into $K$ clusters: Find vectors $u_1, \ldots, u_K$ that represent the centroid of each cluster.
+
+A datapoint $x_n$ belongs to cluster $k$ if the Euclidean distance between $x_n$ and $u_k$ is smaller than the distance to any any other centroid.
+
+Mathematically, the clustering problem defines a mixed discrete continuous optimisation problem. 
+
+\subsubsection{The Cost Function of Vector Quantisation}
+\begin{description}
+    \item[Objective] Minimise the cost function
+        \begin{align*}
+            J(U,Z) = \norm{X-UZ}_F^2 = \sum_{n=1}^N\sum_{k=1}^K z_{k,n} \norm{x_n-u_k}_2^2
+        \end{align*}
+        where
+        \begin{align*}
+            X &= [x_1,\ldots, x_N] \in \R^{D\times N}\\
+            U &= [u_1,\ldots, u_K] \in \R^{D\times K}, &\text{centroids}\\
+            Z &\in \{0,1\}^{K\times N}, &\text{assignments}
+        \end{align*}
+        with $\sum_k z_{k,n} = 1 \forall n$ i.e.,  one element per columns set to $1$.
+\end{description}
+Assignment notation:
+\begin{description}
+    \item[Assignment Notation]: Vector $\hat z \in \{1,\ldots,K\}^N$ indicating for each data point to which cluster index it is assigned:
+    \begin{align*}
+        \hat z = \begin{pmatrix}
+                    2\\ 3\\ 4\\ 2 \\ 2\\ 1
+                 \end{pmatrix}
+    \end{align*}
+    \item[Matrix Notation]: The matrix $Z\in \{0,1\}^{K\times N}$ with only one non-zero entry per column, assigns data points to clusters:
+    \begin{align*}
+        Z &= \begin{pmatrix}
+                 0&0&0&0&0&1\\
+                 1&0&0&1&1&0\\
+                 0&1&0&0&0&0\\
+                 0&0&1&0&0&0
+             \end{pmatrix}
+    \end{align*}
+\end{description}
