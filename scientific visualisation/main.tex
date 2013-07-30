@@ -7,6 +7,9 @@
 \usepackage{mathtools}
 \usepackage[amsmath, amsthm, framed, thmmarks]{ntheorem}
 
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+
 % specifics about the pdf
 \usepackage[english]{babel}
 \usepackage[pdftex]{graphicx}
@@ -84,6 +87,9 @@
 \newcommand{\bigO}[1]{\mc O\left(#1\right)} % big-o notation
 
 \newcommand{\nop}[1]{} % temporarily remove from output
+
+\let\oldemph\emph
+\renewcommand{\emph}[1]{{\color{BrickRed}\oldemph{#1}}}
 
 % remove the paragraph indentation
  \setlength{\parindent}{0in}
