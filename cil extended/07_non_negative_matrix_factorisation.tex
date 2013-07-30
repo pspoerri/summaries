@@ -1,0 +1,51 @@
+\section{Non-Negative Matrix Factorisation}
+
+Problem:
+\begin{itemize}
+    \item Given: Corpus of text documents such as web pages
+    \item Goal: Find a low-dimensional representation of these documents. 
+\end{itemize}
+
+\paragraph{Document Representation}
+\begin{description}
+\item[Vocabulary] Every semantically "useful"word in a language. This excludes all the stop words (the, is, at, which, etc...). Stemming reduces the text to it's root form: Cats, catlike, catty, etc. all map to the same word "cat".
+
+
+$D$ denotes the size of the vocabulary.
+
+\item[Document] \emph{Bag of words}-model: Ordering of the words in a document is ignored. The document is represented by a vector of length $D$ with frequencies/counts of different words. This vector is usually very sparse.
+\end{description}
+
+\subsection{Matrix view} Here $N$ denotes the number of documents and $K$ denotes the number of "clusters" with $D$ being the vocabulary size.
+\begin{itemize}
+    \item $X \in \R_+^{D\times N}$ denotes the document-term matrix which stores the word counts for each document:
+        \begin{align*}
+            X = [x_1,\ldots, x_N]
+        \end{align*}
+        $x_{dn}$: Frequency of the $d$-th word in the $n$-th document.
+    \item We study a non-negative matrix factorisation (NMF) of the document matrix $X$:
+        \begin{align*}
+            X\approx UZ
+        \end{align*}
+        with $U\in \R_+^{D\times K}$ and $Z\in \R_+^{K\times N}$, with $\R_+ := [0,\ldots, \infty)$ . 
+\end{itemize}
+\subsection{Methods}
+\subsubsection{Full Singular Value Decomposition}
+A singular value decomposition can be used to decompose the document word matrix:
+\begin{align*}
+    X = U\Sigma V^T.
+\end{align*}
+However the procured $U$ and $V$ are not guaranteed to be non-negative. 
+
+\subsubsection{Classic Latent Semantic Indexing (LSI)}
+The LSI method uses a partial SVD
+\begin{align*}
+    \tilde X = U\tilde \Sigma V^T \approx X.
+\end{align*}
+With $\tilde \Sigma$ having all but the largest $K$ singular values set to zero. 
+
+\paragraph{Mapping function} A query $x$ can now be mapped by the query can now be compared/queried with an inner product:
+\begin{align*}
+
+\end{align*}
+
