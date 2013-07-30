@@ -1,0 +1,103 @@
+\documentclass[a4paper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{amsmath}
+\usepackage{amsfonts} % for mathbb for instance
+\usepackage{mathtools}
+\usepackage[amsmath, amsthm, framed, thmmarks]{ntheorem}
+
+% specifics about the pdf
+\usepackage[english]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage[pdftex,bookmarks,colorlinks,pdffitwindow]{hyperref}
+
+\usepackage{multicol}  
+%\usepackage[rflt]{floatflt}  
+\usepackage{epsfig} 
+%\usepackage{qtree} 
+\usepackage{url}
+
+\usepackage{todonotes}
+
+% PDF Import support
+\usepackage{pdfpages}
+% Support for PDF scaling
+\usepackage{graphicx}
+% Algorithmen
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{listings} 
+% \lstset{numbers=left, numberstyle=\tiny, numbersep=5pt} 
+\lstset{
+	basicstyle=\ttfamily\scriptsize\mdseries,
+	keywordstyle=\bfseries\color{blue},
+	identifierstyle=,
+% 	stringstyle=\itshape\color{red},
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=10,
+	breaklines=true,
+	frame=none,
+	showstringspaces=false,
+	tabsize=4,
+% 	backgroundcolor=\color{gray},
+% 	morecomment=[s][\color{green}]{/+}{+/},
+	commentstyle=\color{gray},	
+	captionpos=b,
+	float=htbp,
+}
+% math packages
+
+
+% redefine greek letters
+\renewcommand{\phi}{\varphi}
+\renewcommand{\epsilon}{\varepsilon}
+
+% shortcuts in math mode
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\mc}{\mathcal}
+\newcommand{\ds}{\displaystyle}
+\DeclarePairedDelimiter\absimpl{\lvert}{\rvert}
+\DeclarePairedDelimiter\normimpl{\lVert}{\rVert}
+\newcommand{\abs}[1]{\absimpl*{#1}}
+\newcommand{\norm}[1]{\normimpl*{#1}}
+\newcommand{\argmax}{\operatorname*{arg\,max}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}
+
+% number sets
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\powerset}{\mathcal P}
+\newcommand{\normal}{\mathcal N}
+
+% probabilities
+\newcommand{\Prob}[1]{\operatorname{Pr}\left[#1\right]}
+\newcommand{\Ex}[1]{\mathbb{E}\left[#1\right]}
+
+% misc
+\newcommand{\bigO}[1]{\mc O\left(#1\right)} % big-o notation
+
+\newcommand{\nop}[1]{} % temporarily remove from output
+
+% remove the paragraph indentation
+ \setlength{\parindent}{0in}
+
+\author{Pascal Spörri\\pascal@spoerri.io}
+\title{Scientific Visualisation Summary\\ FS 2013\\ }
+%\thanks{Licence: Creative Commons Attribution-Share Alike 3.0 Unported (\url{http://creativecommons.org/licenses/by-sa/3.0/})}}
+\date{\today}
+
+\begin{document}
+\maketitle
+This summary is based on the course slides of the Scientific Visualisation course at ETH Zürich\footnote{\url{http://www.scivis.ethz.ch/education/scivis_course/notes}} from spring semester 2013.
+\newpage
+\tableofcontents
+\input{01_intro}
+
+\end{document}
