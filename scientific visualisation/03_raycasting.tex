@@ -170,7 +170,7 @@ The color transfer function allows to make a simple \emph{classification}.
 \end{itemize}
 
 \subsubsection{Pre- vs. Post-classification}
-For quality reasons,current volume rendering implementations often use \emph{post-classficiation}.
+For quality reasons, current volume rendering implementations often use \emph{post-classficiation}.
 
 \begin{description}
 \item[Pre-Classification] $\ $
@@ -226,13 +226,14 @@ simplifies for linear $s(x)$ to:
 \end{align*}
 which can be precomputed for all combinations of $s_i$, $s_{i+1}$ and $d$.
 
-\paragraph{Extinction-based volume rendering}
-Instead of an opacity TF, use an extinction TF [Schlegel 2011]. Advantage: Extinction is \emph{additive}.
+\subsubsection{Extinction-based volume rendering}
+Instead of an opacity Transfer function, use an extinction TF [Schlegel 2011]. Advantage: Extinction is \emph{additive}.
 \begin{itemize}
     \item Riemann sums for numerical integration give better accuracy.
     \item Additivity can be used for efficient lighting.
 \end{itemize}
 
+\paragraph{Screen-Space ambient occlusion} Approximate the fraction of ambient light that is occluded. Method: Compute the total extinction per shell (boxes approximating spheres) b using a \emph{summed area table}.
 
 
 
