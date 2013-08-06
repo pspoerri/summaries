@@ -142,7 +142,7 @@ Consider a non-negative $X$ and a quadratic cost function as in $K$-means:
 \STATE $U \gets rand(D,K)$
 \STATE $Z \gets rand(K,N)$
 \FOR {$i= 1:maxiter$}
-    \STATE Update Factors $U$: $u_{dk} \gets u_dk {(XZ^T)_{dk}\over (UZZ^T)_{dk}}.$
+    \STATE Update Factors $U$: $u_{dk} \gets u_{dk} {(XZ^T)_{dk}\over (UZZ^T)_{dk}}.$
     \STATE Update coefficients $Z$: $z_{kn} \gets z_{kn} {(U^TX)_{kn}\over (U^TUZ)_{kn}}.$
 
 \ENDFOR
@@ -161,13 +161,13 @@ Here: $a_{ij}^+ := \max(0,a_{ij})$ and $a_{ij}^- := \min(0,a_{ij})$.$u_{dk} \get
 \subsubsection{$K$-means Clustering Theorem}
 $Z$-orthoganl ($ZZ^T = I$) semi-NMF is equivalent to $K$-means clustering:
 \begin{align*}
-    \min_{U,Z}\ &J(U,Z) ={1\over 2} \norm{X-UZ}_F^2.\\
-    \text{s.t.}\ &Z\in \{0,1\}^{K\times N}\\
+    \min_{U,Z}\ &J(U,Z) ={1\over 2} \norm{X-UZ}_F^2,\\
+    \text{s.t.}\ &Z\in \{0,1\}^{K\times N},\\
     &\sum_k z_{kn} = 1.
 \end{align*}
 is equivalent to:
 \begin{align*}
-    \min_{U,Z}\ &J(U,Z) ={1\over 2} \norm{X-UZ}_F^2.\\
+    \min_{U,Z}\ &J(U,Z) ={1\over 2} \norm{X-UZ}_F^2,\\
     \text{s.t.}\ & ZZ^T = I,Z \geq 0.
 \end{align*}
 
