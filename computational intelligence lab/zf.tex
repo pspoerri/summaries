@@ -177,7 +177,7 @@ Data: $\mathbf X = [\mathbf x_1 \ldots \mathbf x_n] \in \R^{D\times N}$, centroi
  \[
   k^*(\mathbf x_n) = \argmin \left\{||\mathbf x_n - \mathbf u_1^{(t)}||_2^2,\ldots, ||\mathbf x_n - \mathbf u_K^{(t)}||_2^2 \right\}.
  \]
- Then, $z_{k^*(\mathbf x_n), n}^{(t)} = 1$ and $z_{j, n}^{(t)}\ \forall k, k\in \{1, \ldots, K\}$
+ Then, $z_{k^*(\mathbf x_n), n}^{(t)} = 1$ and $z_{j, n}^{(t)} =0\ \forall j\neq k,\ j\in [1,\ldots,k]$
 \item \emph{Centroid update}.
 \[
  \mathbf u_k^{(t)} = {\sum_{n=1}^N z_{k,n}^{(t)}\mathbf x_n \over \sum_{i=1}^N z_{k,n}^{(t)}}\quad \forall k,\ k \in \{1, \ldots, K\}
