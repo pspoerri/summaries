@@ -44,8 +44,177 @@ The LSI method uses a partial SVD
 \end{align*}
 With $\tilde \Sigma$ having all but the largest $K$ singular values set to zero. 
 
-\paragraph{Mapping function} A query $x$ can now be mapped by the query can now be compared/queried with an inner product:
+\paragraph{Mapping function} A query $x\mapsto (U\tilde \Sigma)^T x$
+ can now be mapped by the query can now be compared/queried with an inner product:
 \begin{align*}
-
+\langle \overline x_1 , \overline x_2\rangle = 
+    \left( 
+        \left(
+            U\tilde \Sigma
+        \right)^T x_1
+     \right)^T
+    \left( U\tilde \Sigma \right)^T x_2 = x_1 U\tilde \Sigma^2 U^T x_2.
 \end{align*}
+
+\subsubsection{Probabilistic Latent Semantic Indexing (pLSI)}
+Fixes some shortcomings of LSI:
+\begin{itemize}
+    \item Probabilistic
+    \item Takes non-negativity into account. 
+\end{itemize}
+
+\paragraph{Generative model} In order to generate a tuple $(document,\ word)$:
+\begin{itemize}
+\item Sample a document according to $P(document)$.
+\item Sample a word according to $P(word|document)$.
+\item Assume a factorisation:
+    \begin{align*}
+        P(word|document) = \sum_{topic} P(word|topic) P(topic|document)
+    \end{align*}
+    Which assumes a conditional independence of word and document given the topic.
+\end{itemize}
+
+The joint distribution of a document and a word is therefore:
+\begin{align*}
+    P(word,\ document) = P(word|document)P(document).
+\end{align*}
+
+\paragraph{Matrix Factorisation View} In a first step normalise the elements of $X$ so that they can be interpreted as probabilities:
+\begin{align*}
+    P(d-th\ word,\ n-th\ document) = {x_{dn}\over \sum_{d',\ n'} x_{d'n'}}.
+\end{align*}
+
+pLSI can be understood as a matrix factorisation of the form
+\begin{align*}
+    X\approx UZ,
+\end{align*}
+with $U\in R_+^{D\times K}$ and $Z\in R_+^{K\times N}$. Additionally we have the constraints:
+\begin{align*}
+    \sum_{d=1}^D u_{dk} = 1\ \forall k\qquad \text{and}\qquad \sum_{k,n} z_{kn} =1.
+\end{align*}
+
+\paragraph{Parameter Estimation} We want to maximise the likelihood of the data under the mode. Data: The normalised occurrence $X$ with the model:
+\begin{align*}
+    P(word,\ document) = \sum_{topic} P(word|topic) P(topic,\ document).
+\end{align*}
+Due to the constraints on $U$ and $Z$ the pLSI model can be equivalently written as:
+\begin{align*}
+P(d-th\ word,\ n-th\ document) = x_{dn} = (UZ)_{dn}.
+\end{align*}
+
+\paragraph{Kullback-Leibler Divergence} between two discrete probability distributions $P(x)$ and $Q(x)$:
+\begin{align*}
+    D_{KL} (P||Q) = \sum_{x\in \mathcal X} P(x) \log \left(
+        {P(x)\over Q(x)}
+        \right)
+\end{align*}
+Properties:
+\begin{align*}
+    D_{KL} (P||Q) &\geq 0.\\
+    D_{KL} (P||Q) &= 0 &\text{iff $P$ and $Q$ are identical.}\\
+    D_{KL}(P||Q) &\neq D_{KL}(Q||P)!
+\end{align*}
+
+The KL-divergence is not symmetric and therefore is not a metric/distance.
+
+\paragraph{Kullback-Leibler Divergence applied for pLSI} maximising the likelihood of the data under the model is the same as minimising the KL-divergence of $X$ and $UZ$:
+\begin{align*}
+    \min_{U,Z} &\sum_{d=1}^D\sum_{n=1}^N x_{dn} \log\left({x_dn\over (UZ)_{dn}}\right)\\
+    \text{s.t.}\ & \sum_{d=1} ^D u_{dk} = 1\forall k,\\
+    &\sum_{k,n} z_{kn} =1\\
+    &u_{dk} \geq 0,\ z_{kn} \geq 0.
+\end{align*}
+$U$, $Z$ can be minimised by an EM algorithm similar to the one for the Gaussian Mixture Model.
+
+\subsubsection{Quadratic NMF}
+So far: pLSI as a specific NMF for document indexing. NMF is a more general concept though. 
+
+Consider a non-negative $X$ and a quadratic cost function as in $K$-means:
+\begin{align*}
+     \min_{U,Z}& J(U,Z) = {1\over 2} \norm{X-UZ}_F^2\\
+     \text{s.t.}& u_{dk} \in [0,\infty)\ \forall d,k\\
+     &z_{kn} \in [0,\infty)\ \forall k, n.
+\end{align*}
+
+
+\paragraph{Algorithm} The NMF algorithm is similar to the $K$-means algorithm in that it alternates between two update steps:
+\begin{algorithmic}
+\STATE $U \gets rand(D,K)$
+\STATE $Z \gets rand(K,N)$
+\FOR {$i= 1:maxiter$}
+    \STATE Update Factors $U$: $u_{dk} \gets u_dk {(XZ^T)_{dk}\over (UZZ^T)_{dk}}.$
+    \STATE Update coefficients $Z$: $z_{kn} \gets z_{kn} {(U^TX)_{kn}\over (U^TUZ)_{kn}}.$
+
+\ENDFOR
+\end{algorithmic}
+This leads to $X\approx UZ$ when $K<N$ or possibly $X=UZ$ for $N\leq K$.
+
+\subsubsection{Semi-NMF (for Quadratic Cost)}
+When we relax the non-negativity assumption on $U$ this leads to the so called
+\emph{Semi Non-Negative Matrix Factorisation}. The semi-NMF algorithm is similar to the $K$-means algorithm and to the NMF algorithm. It also alternates between two update steps:
+\begin{algorithmic}
+\STATE Update $U$: $U=XZ^T (ZZ^T)^{-1}$.
+\STATE Update $Z$: $z_{kn} \gets z_{kn} \sqrt{{(U^T X)_{kn}^T +[(U^T U)^- Z]_{kn} \over (U^TX)_{kn}^- + [(U^TU)^+ Z]_{kn}}}$.
+\end{algorithmic}
+Here: $a_{ij}^+ := \max(0,a_{ij})$ and $a_{ij}^- := \min(0,a_{ij})$.$u_{dk} \gets u_dk {(XZ^T)_{dk}\over (UZZ^T)_{dk}}.$
+
+\subsubsection{$K$-means Clustering Theorem}
+$Z$-orthoganl ($ZZ^T = I$) semi-NMF is equivalent to $K$-means clustering:
+\begin{align*}
+    \min_{U,Z}\ &J(U,Z) ={1\over 2} \norm{X-UZ}_F^2.\\
+    \text{s.t.}\ &Z\in \{0,1\}^{K\times N}\\
+    &\sum_k z_{kn} = 1.
+\end{align*}
+is equivalent to:
+\begin{align*}
+    \min_{U,Z}\ &J(U,Z) ={1\over 2} \norm{X-UZ}_F^2.\\
+    \text{s.t.}\ & ZZ^T = I,Z \geq 0.
+\end{align*}
+
+If $Z$ is not restricted to be orthogonal, semi-NMF is equivalent to a \emph{soft} $K$-means clustering (not GMM!).
+
+\subsubsection{Convex-NMF}
+For interpretability reasons we can impose the constraint that $U$ lies within the column space of $X$:
+\begin{align*}
+    u_k = w_{1k} x_1 + \ldots + w_{nk} x_n,\qquad \qquad U=XW,
+\end{align*}
+with $W\in \R_+^{N\times K}$.
+
+So $X$ is factorized in the following way:
+\begin{align*}
+    X\approx UZ = XWZ.
+\end{align*}
+
+$U$ is a \emph{convex combination} of input data. The convexity of the data combination \emph{does not lead} to a convex optimisation problem. The algorithm for convex-NMF follows an analogous iterative update procedure. 
+
+Convex-NMF factors $U$ are naturally \emph{sparse}
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
