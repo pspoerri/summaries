@@ -117,10 +117,10 @@ The main idea of this method is to acquire the set $y$ of $M$ linear combination
 Surprisingly given any orthonormal basis $U$ we can obtain a stable reconstruction for any $K$-sparse and compressible signal.
 
 This is true under two conditions:
-\begin{align*}
+\begin{enumerate}
     \item All elements $w_{i,j}$ of matrix $W$ are i.i.d. random variables with a Gaussian distribution with zero mean and variance ${1\over D}$.
     \item $M:M \geq cK\log\left({D\over K}\right)$, where $c$ is some constant.
-\end{align*}
+\end{enumerate}
 
 To recover the initial signal $x\in \R^D$ from the measured signal $y\in \R^M$ we need to find a sparse representation $z$:
 \begin{align*}
