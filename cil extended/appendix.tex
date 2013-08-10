@@ -263,6 +263,63 @@ and solve
     \nabla_{x,y,\lambda} \Lambda(x,y,\lambda) = 0.
 \end{align*}
 
+\section{Convex Set}
+A set $C$ is convex if the line segment between any two points in $C$ lies in $C$, i.e., if for any $x1,x2 \in C$ and any $\theta$ with $0 \leq \theta\leq 1$, we have
+\begin{align*}
+    \theta x_1 + (1-\theta)x_2 \in C.
+\end{align*}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{img/convex_set}
+\end{figure}
+\begin{description}
+\item[Left] Convex.
+\item[Middle] Not convex, since the line segment is not in the set.
+\item[Right] Not convex, since some, but not all boundary points are contained in the set.
+\end{description}
+
+\section{Convex Function}
+The graph of a function $f:\R^n \rightarrow \R$ is defined as 
+\begin{align*}
+    \{
+        (x,f(x))\ |\ x\in \text{dom}\ f
+    \}.
+\end{align*}
+The \emph{epigraph} of a function $f:\R^n\rightarrow \R$ is defined as
+\begin{align*}
+    \{
+        (x,f(x))\ |\ x\in \text{dom}\ f,\ f(x)\leq t
+    \}.
+\end{align*}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{img/epigraph}
+\end{figure}
+
+\paragraph{Examples of convex functions} $\ $
+\begin{itemize}
+ \item Linear functions: $f(x) = c^T x$
+ \item Affine functions: $f(x) = Ax+b$
+ \item Exponential: $f(x) = e^{\alpha x}$
+ \item Norms Every norm on $\R^n$ is convex.
+\end{itemize}
+
+\paragraph{Convexity of a norm $f(x)$} By the triangle inequality 
+\begin{align*}
+    f(x+y) \leq f(x) + f(y)
+\end{align*}
+and homogeneity of a norm 
+\begin{align*}
+    f(\alpha x) &= |\alpha| f(x) &\alpha \text{ a scalar}
+\end{align*}
+we can prove that:
+\begin{align*}
+    f(\theta x+(1-\theta)y)\leq f(\theta x)+f((1-\theta)y) = \theta f(x) + (1-\theta)f(y).
+\end{align*}
+
+
+
+
 
 
 
