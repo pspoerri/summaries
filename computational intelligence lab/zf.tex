@@ -99,11 +99,11 @@
 \sectionline
 \section{Basics}
 \begin{align*}
- \text{Scalar product: }&\mathbf x^T \mathbf y = ||\mathbf x||_2 \cos \theta\\
+ \text{Scalar product: }&\mathbf x^T \mathbf y = ||\mathbf x||_2 ||\mathbf y||_2 \cos \theta\\
  L_2-\text{Norm: } & ||x||_2 = \sqrt{x^Tx}\\
  \text{Spectral Norm: } &\ ||A||_2 = \sigma_{max}(A)\\\
  \text{Nuclear Norm: }& ||A||_* = \sum_{i=1}^{\min\{m,n\}} \sigma_i\quad (\sigma: \text{Singular Value})\\
- \text{Frobenius Norm: }& ||A||_F = \sqrt{\sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2}
+ \text{Frobenius Norm: }& ||A||_F = \sqrt{\sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2} = \sum_{i=1}^{\min(n,m)} \sigma_i^2
 \end{align*}
 
 \vspace{-3mm}
