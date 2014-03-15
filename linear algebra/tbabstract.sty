@@ -1,0 +1,128 @@
+%
+% Package tbabstract.sty
+% Copyright (c) Thorben Bochenek, 2008
+%
+% This package alters the geometry and defines new environments to create
+% visually appealing abstracts
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3b
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+% http://www.latex-project.org/lppl.txt
+% and version 1.3b or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `unmaintained'.
+% 
+
+\ProvidesPackage{tbabstract}
+
+\RequirePackage{color}
+\RequirePackage{framed}             
+
+\RequirePackage{geometry}
+\geometry{a4paper, left=10mm, right=10mm, top=20mm, bottom=20mm} 
+
+\setlength{\parindent}{0pt}
+
+\newenvironment{fshaded}{
+\def\FrameCommand{\fcolorbox{framecolor}{shadecolor}}
+\MakeFramed {\FrameRestore}}
+{\endMakeFramed}
+
+% Neue Umgebungen
+
+% Definitionen
+\newenvironment{fdef}[1][]{\definecolor{shadecolor}{rgb}{1,.92,.92}
+    \definecolor{framecolor}{rgb}{1,0,0}
+    \begin{fshaded}\vspace{-5mm}\subsubsection*{#1}\vspace{-1.5mm}}{\end{fshaded}}
+
+% Unwichtigerere Definition
+\newenvironment{fsubdef}[1][]{\definecolor{shadecolor}{rgb}{1,1,1}
+    \definecolor{framecolor}{rgb}{1,0,0}
+    \begin{fshaded}\vspace{-5mm}\subsubsection*{#1}\vspace{-1.5mm}}{\end{fshaded}}
+
+% mathematische Sätze
+\newenvironment{fsatz}[1][]{\definecolor{shadecolor}{rgb}{1,1,.8}
+    \definecolor{framecolor}{rgb}{1,.9,0}
+    \begin{fshaded}\vspace{-5mm}\subsubsection*{#1}\vspace{-2mm}}{\end{fshaded}}
+    
+% Regeln (möglichst nicht zusammen in einem Dokument mit Datenstruktur)
+\newenvironment{fregeln}[1][]{\definecolor{shadecolor}{rgb}{.9,1,.9}
+    \definecolor{framecolor}{rgb}{0,1,0}
+    \begin{fshaded}\vspace{-5mm}\subsubsection*{#1}\vspace{-2mm}}{\end{fshaded}}
+
+% Datenstruktur (möglichst nicht zusammen in einem Dokument mit Regel)
+\newenvironment{fds}[1][]{\definecolor{shadecolor}{rgb}{.9,1,.9}
+    \definecolor{framecolor}{rgb}{0,1,0}
+    \begin{fshaded}\vspace{-5mm}\subsubsection*{#1}\vspace{-2mm}}{\end{fshaded}}
+
+% Eigenschaften (z.B. von definierten Strukturen)
+\newenvironment{feig}[1][]{\definecolor{shadecolor}{rgb}{1,.94,.8}
+    \definecolor{framecolor}{rgb}{0.996,.65,0}
+    \begin{fshaded}\vspace{-5mm}\subsubsection*{#1}\vspace{-2mm}}{\end{fshaded}}
+    
+% Merksätze
+\newenvironment{fmerke}[1][]{\definecolor{shadecolor}{rgb}{1,1,1}
+    \definecolor{framecolor}{rgb}{0,0,1}
+    \begin{fshaded}\vspace{-5mm}\subsubsection*{#1}\vspace{-2mm}}{\end{fshaded}}
+    
+% Algorithmen
+\newenvironment{falgo}[1][]{\definecolor{shadecolor}{rgb}{.96,.96,1}
+    \definecolor{framecolor}{rgb}{0,0,1}
+    \begin{fshaded}\vspace{-5mm}\subsubsection*{#1}\vspace{-1.2mm}}{\end{fshaded}}
+
+% neue Kommandos
+\newcommand{\SP}[1]{\left\langle\mathbf{#1}\right\rangle} % Skalarprodukt <...>
+\newcommand{\modcon}[3]{{{#1}\ \equiv\ {#2}\ (\text{mod} #3)}} %Modulo Makro
+\newcommand{\nequiv}{{\not \equiv}}
+
+
+  % Zahlzeichen
+  \newcommand{\Z}     {\mathbb{Z}}
+  \newcommand{\R}     {\mathbb{R}}
+  \newcommand{\C}     {\mathbb{C}}
+  \newcommand{\N}     {\mathbb{N}} 
+  \newcommand{\Q}     {\mathbb{Q}}
+  % Galoiskörper GF
+  \newcommand{\GF}     {\text{GF}}
+  % charakteristisches Polynom (chp)
+  \newcommand{\chp}     {\text{chp}}
+  % römische Zahlen
+  \newcommand{\rom}[1]{\MakeUppercase{\romannumeral #1}}
+  
+% Trigonometrie
+\newcommand{\arsinh}     {\text{arsinh}}
+\newcommand{\arcosh}     {\text{arcosh}}
+\newcommand{\artanh}     {\text{artanh}}
+\newcommand{\arcoth}     {\text{arcoth}}
+\newcommand{\arccot}     {\text{arccot}}
+
+% Betragszeichen
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\vektor}[1]{\left( \begin{array}{c}
+                               #1
+                              \end{array} \right)}
+
+% Kompaktere Listen  
+\newenvironment{itemize_compact}{
+\begin{itemize}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{1pt}
+  \setlength{\parsep}{1pt}
+}{\end{itemize}}
+
+\newenvironment{desc_compact}{
+\begin{description}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{1pt}
+  \setlength{\parsep}{1pt}
+}{\end{description}}
+
+\newenvironment{enumerate_compact}{
+\begin{enumerate}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{1pt}
+  \setlength{\parsep}{1pt}
+}{\end{enumerate}}
